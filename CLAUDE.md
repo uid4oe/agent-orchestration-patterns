@@ -8,12 +8,12 @@ Educational repo demonstrating 4 multi-agent orchestration patterns with a React
 
 | Document | Purpose |
 |----------|---------|
-| `.claude/docs/PLAN.md` | Full architecture, directory structure, core design, build order |
+| `.claude/docs/plan.md` | Full architecture, directory structure, core design, build order |
 | `.claude/docs/streaming-protocol.md` | StreamEvent types, SSE format, emission rules |
 | `.claude/docs/pattern-interface.md` | PatternRunner contract, per-pattern specs |
 | `.claude/docs/commit-guidelines.md` | Commit sizing, grouping, message format |
 
-**Read .claude/docs/PLAN.md first** — it's the source of truth for all architecture decisions.
+**Read .claude/docs/plan.md first** — it's the source of truth for all architecture decisions.
 
 ## Agent Team
 
@@ -145,7 +145,7 @@ docker compose --profile langfuse up  # everything including Langfuse
 
 ## Build Order
 
-Check `.claude/docs/PLAN.md` for what's done vs pending:
+Check `.claude/docs/plan.md` for what's done vs pending:
 
 1. ~~Scaffold (root config, dirs, package.json files)~~ DONE
 2. Core — LLM types + provider → use `core-builder`
