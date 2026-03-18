@@ -79,13 +79,8 @@ export function App() {
 
       {/* Unified input bar: pattern selector + textarea + send */}
       <div className="shrink-0">
-        <div className="flex items-center gap-2 max-w-2xl mx-auto rounded-2xl glass-strong px-2 py-1.5 focus-within:ring-2 focus-within:ring-[var(--color-accent)]/15 transition-shadow">
-          {/* Pattern selector inline */}
-          <PatternSelector
-            selected={selectedPattern}
-            onSelect={handlePatternSelect}
-          />
-          <div className="w-px h-6 bg-[var(--color-border)] shrink-0" />
+        <div className="flex flex-col gap-1.5 max-w-4xl w-full mx-auto rounded-2xl glass-strong px-3 py-2 focus-within:ring-2 focus-within:ring-[var(--color-accent)]/15 transition-shadow">
+          {/* Textarea row */}
           <textarea
             ref={inputRef}
             value={input}
@@ -93,15 +88,22 @@ export function App() {
             onKeyDown={handleKeyDown}
             placeholder="Type a message..."
             rows={1}
-            className="flex-1 resize-none bg-transparent px-1 py-1.5 text-sm text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)] focus:outline-none disabled:opacity-50"
+            className="w-full resize-none bg-transparent px-1 py-1 text-sm text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)] focus:outline-none disabled:opacity-50"
             disabled={isStreaming}
           />
-          {!isStreaming && !input.trim() && (
-            <span className="text-[10px] text-[var(--color-text-tertiary)] opacity-40 pointer-events-none select-none shrink-0 hidden sm:block">
-              Enter &crarr;
-            </span>
-          )}
-          <button
+          {/* Bottom row: pattern tabs + send */}
+          <div className="flex items-center gap-2">
+            <PatternSelector
+              selected={selectedPattern}
+              onSelect={handlePatternSelect}
+            />
+            <div className="flex-1" />
+            {!isStreaming && !input.trim() && (
+              <span className="text-[10px] text-[var(--color-text-tertiary)] opacity-40 pointer-events-none select-none shrink-0 hidden sm:block">
+                Enter &crarr;
+              </span>
+            )}
+            <button
             type="button"
             onClick={handleSend}
             disabled={isStreaming || !input.trim()}
@@ -115,7 +117,8 @@ export function App() {
             ) : (
               "Send"
             )}
-          </button>
+            </button>
+          </div>
         </div>
       </div>
     </div>
