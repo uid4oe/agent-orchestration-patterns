@@ -24,6 +24,13 @@ You build the Express API server at `server/src/`.
 - Validate input on all endpoints (non-empty string for pattern run)
 - Catch all errors — never let Express crash
 
+## Learnings from Previous Runs
+
+- **Verify project references resolve first** — core needs `composite: true` in its tsconfig. Run `npm run typecheck` early to catch reference issues.
+- **Use dynamic imports for pattern packages** — patterns may not exist yet. Use `try/catch` around `import()` calls and start with an empty pattern map.
+- **Dataset path resolution** — eval datasets live at `patterns/{name}/src/eval/dataset.json`. Be explicit about path resolution in eval routes.
+- **SSEStreamEmitter disconnect handling is critical** — always listen for `res.on("close")` to prevent write-after-close errors.
+
 ## Do NOT Touch
 
 - `packages/core/`, `frontend/`, `patterns/`

@@ -8,6 +8,8 @@ Educational repo: 4 multi-agent orchestration patterns with React frontend, SSE 
 2. `docs/steps/` — step-by-step implementation guides (start with `01-core-library.md`)
 3. `.claude/docs/` — technical specs (streaming protocol, pattern interface, commit guidelines)
 4. `.claude/agents/` — specialized agent roles
+5. `.claude/diary/` — self-improvement diary (evolution log)
+6. `.claude/docs/feedback-loop.md` — feedback loop process
 
 ## Implementation Steps
 
@@ -43,8 +45,18 @@ Step 1 ──→ Step 2 ──→ Step 3
 ### Workflow
 
 ```
-1. Implement  →  2. Self-check  →  3. Run code-reviewer  →  4. Fix issues  →  5. Commit
+1. Implement  →  2. Self-check  →  3. Run code-reviewer  →  4. Fix issues  →  5. Commit  →  6. Feedback loop
 ```
+
+### Feedback Loop (after each step)
+
+After completing each implementation step, run the feedback loop (`.claude/docs/feedback-loop.md`):
+1. **Reflect** — what worked, what surprised, what went wrong
+2. **Record** — write diary entry in `.claude/diary/`
+3. **Update** — apply learnings to agent definitions and docs
+4. **Link** — update `.claude/diary/INDEX.md`
+
+This is how the system improves over time. `git log .claude/diary/` shows the full evolution.
 
 ### Self-check (before calling code-reviewer)
 - `npm run typecheck` passes

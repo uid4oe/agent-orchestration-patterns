@@ -25,6 +25,12 @@ You build the shared core library at `packages/core/src/`.
 - BaseAgent emits `agent_start`/`agent_end` automatically; subclasses implement `execute()`
 - BaseAgent re-throws errors after emitting `error` event (orchestrators catch)
 
+## Learnings from Previous Runs
+
+- **tsconfig `composite: true` is required** when this package is a project reference target. Verify it's set before other workspaces try to build against core.
+- **`lastUsage` on provider** — mutable state tracking is pragmatic for streaming but document the fallback behavior (default to zero when provider doesn't report usage, e.g., Ollama).
+- **Step doc code snippets are high-quality** — follow them closely, they reduce ambiguity.
+
 ## Do NOT Touch
 
 - `server/`, `frontend/`, `patterns/`

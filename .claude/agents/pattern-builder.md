@@ -29,6 +29,13 @@ You implement individual orchestration patterns in `patterns/<name>/src/`.
 - `done` fires exactly once with aggregated token usage
 - Build one pattern at a time, bottom-up (leaf agents first, orchestrator last)
 
+## Learnings from Previous Steps
+
+- **Ensure package.json exports are correct** — the server uses dynamic `import()` to load patterns. Your package.json must have proper `"exports": { ".": "./src/index.ts" }` so the server can import your PatternRunner.
+- **Dataset files go at `patterns/{name}/src/eval/dataset.json`** — the server's eval route resolves this path.
+- **Core's BaseAgent handles agent_start/agent_end automatically** — your agents just implement `execute()` and call `this.chatStream()` to stream LLM output.
+- **tsconfig needs project reference to core** — add `"references": [{ "path": "../../packages/core" }]`.
+
 ## Do NOT Touch
 
 - `packages/core/`, `server/`, `frontend/`
