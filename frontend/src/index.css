@@ -123,6 +123,24 @@ html, body, #root {
   }
 }
 
+@keyframes status-pulse {
+  0%, 100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes summary-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.08);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.06);
+  }
+}
+
 /* ── Utility Classes ────────────────────────────────────────── */
 
 .animate-message-in {
@@ -148,6 +166,14 @@ html, body, #root {
 
 .animate-spin-slow {
   animation: spin-slow 1s linear infinite;
+}
+
+.animate-status-pulse {
+  animation: status-pulse 1.5s ease-in-out infinite;
+}
+
+.animate-summary-pulse {
+  animation: summary-pulse 2s ease-in-out infinite;
 }
 
 /* ── Scrollbar ──────────────────────────────────────────────── */

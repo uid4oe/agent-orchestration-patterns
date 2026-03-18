@@ -91,6 +91,7 @@ export function App() {
             traceNodes={traceNodes}
             traceEdges={traceEdges}
             totalUsage={totalUsage}
+            isStreaming={isStreaming}
           />
         </div>
       </main>
