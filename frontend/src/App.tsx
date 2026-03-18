@@ -34,13 +34,13 @@ export function App() {
   );
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden bg-[var(--color-surface-secondary)]">
+    <div className="flex flex-col h-screen overflow-hidden p-2 lg:p-3 gap-2 lg:gap-3">
       {/* Header */}
-      <header className="shrink-0 bg-white border-b border-[var(--color-border-light)]">
+      <header className="shrink-0 glass-strong rounded-2xl">
         <div className="flex items-center justify-between px-5 py-3">
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2">
-              <div className="h-7 w-7 rounded-lg bg-[var(--color-accent)] flex items-center justify-center">
+            <div className="flex items-center gap-2.5">
+              <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-sm shadow-blue-500/20">
                 <svg
                   className="h-4 w-4 text-white"
                   fill="none"
@@ -59,12 +59,12 @@ export function App() {
                 Agent Orchestration
               </h1>
             </div>
-            <span className="rounded-full bg-[var(--color-accent-light)] px-2 py-0.5 text-[10px] font-semibold text-[var(--color-accent)] uppercase tracking-wider">
+            <span className="rounded-full bg-blue-500/10 px-2.5 py-0.5 text-[10px] font-semibold text-blue-600 uppercase tracking-wider">
               dev
             </span>
           </div>
         </div>
-        <div className="border-t border-[var(--color-border-light)]">
+        <div className="border-t border-[var(--color-border)]">
           <PatternSelector
             selected={selectedPattern}
             onSelect={handlePatternSelect}
@@ -73,9 +73,9 @@ export function App() {
       </header>
 
       {/* Main content */}
-      <main className="flex flex-1 min-h-0 flex-col lg:flex-row">
+      <main className="flex flex-1 min-h-0 flex-col lg:flex-row gap-2 lg:gap-3">
         {/* Chat panel */}
-        <div className="flex-[3] min-h-0 bg-white lg:rounded-tr-none">
+        <div className="flex-[3] min-h-0 glass-strong rounded-2xl overflow-hidden">
           <Chat
             messages={messages}
             isStreaming={isStreaming}
@@ -86,7 +86,7 @@ export function App() {
         </div>
 
         {/* Trace panel */}
-        <div className="flex-[2] min-h-0 border-t lg:border-t-0 lg:border-l border-[var(--color-border-light)] bg-[var(--color-surface-secondary)]">
+        <div className="flex-[2] min-h-0 glass rounded-2xl overflow-hidden">
           <TraceView
             traceNodes={traceNodes}
             traceEdges={traceEdges}

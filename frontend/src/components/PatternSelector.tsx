@@ -99,8 +99,8 @@ export function PatternSelector({
             onClick={() => handleSelect(pattern.name)}
             className={`shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200 ${
               isActive
-                ? "bg-[var(--color-accent)] text-white shadow-sm"
-                : "text-[var(--color-text-secondary)] bg-[var(--color-surface-tertiary)] hover:bg-[var(--color-border)] hover:text-[var(--color-text-primary)]"
+                ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-sm shadow-blue-500/20"
+                : "text-[var(--color-text-secondary)] bg-white/60 backdrop-blur-sm border border-white/50 hover:bg-white/80 hover:text-[var(--color-text-primary)]"
             }`}
             title={pattern.description}
           >

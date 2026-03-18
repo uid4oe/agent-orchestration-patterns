@@ -71,7 +71,7 @@ function TraceNodeCard({ node, index }: TraceNodeCardProps) {
 
   return (
     <div
-      className={`animate-node-in rounded-xl border ${borderColor} bg-white shadow-sm transition-all duration-200 hover:shadow-md cursor-pointer`}
+      className={`animate-node-in rounded-xl border ${borderColor} glass-card transition-all duration-200 hover:shadow-md cursor-pointer`}
       style={{ animationDelay: `${index * 80}ms` }}
       onClick={toggle}
       role="button"
@@ -219,7 +219,7 @@ function SummaryCard({ totalUsage, nodes }: SummaryCardProps) {
   const errorCount = nodes.filter((n) => n.status === "error").length;
 
   return (
-    <div className="animate-fade-in rounded-xl border border-[var(--color-border)] bg-white shadow-sm p-4 mt-4">
+    <div className="animate-fade-in rounded-xl glass-card p-4 mt-4">
       <h4 className="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-tertiary)] mb-3">
         Summary
       </h4>

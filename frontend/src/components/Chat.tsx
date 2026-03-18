@@ -165,30 +165,28 @@ export function Chat({
       </div>
 
       {/* Input area */}
-      <div className="shrink-0 border-t border-[var(--color-border-light)] bg-white/80 backdrop-blur-sm p-4">
-        <div className="flex items-end gap-3 max-w-3xl mx-auto">
-          <div className="relative flex-1">
-            <textarea
-              ref={inputRef}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Type a message..."
-              rows={1}
-              className="w-full resize-none rounded-2xl border border-[var(--color-border)] bg-white px-4 py-2.5 text-sm text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/20 disabled:opacity-50 transition-shadow"
-              disabled={isStreaming}
-            />
-            {!isStreaming && (
-              <span className="absolute right-3 bottom-2.5 text-[10px] text-[var(--color-text-tertiary)] opacity-60 pointer-events-none select-none">
-                Enter to send
-              </span>
-            )}
-          </div>
+      <div className="shrink-0 p-3 lg:p-4">
+        <div className="flex items-center gap-2 max-w-3xl mx-auto rounded-2xl border border-white/50 bg-white/60 backdrop-blur-xl shadow-sm px-2 py-1.5 focus-within:border-[var(--color-accent)]/30 focus-within:ring-2 focus-within:ring-[var(--color-accent)]/10 transition-shadow">
+          <textarea
+            ref={inputRef}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Type a message..."
+            rows={1}
+            className="flex-1 resize-none bg-transparent px-2 py-1.5 text-sm text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)] focus:outline-none disabled:opacity-50"
+            disabled={isStreaming}
+          />
+          {!isStreaming && !input.trim() && (
+            <span className="text-[10px] text-[var(--color-text-tertiary)] opacity-50 pointer-events-none select-none shrink-0 hidden sm:block">
+              Enter &crarr;
+            </span>
+          )}
           <button
             type="button"
             onClick={handleSend}
             disabled={isStreaming || !input.trim()}
-            className="shrink-0 rounded-full bg-[var(--color-accent)] px-5 py-2.5 text-sm font-medium text-white hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/40 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm"
+            className="shrink-0 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-sm font-medium text-white hover:brightness-110 focus:outline-none disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm shadow-blue-500/15"
           >
             {isStreaming ? (
               <span className="flex items-center gap-1.5">
