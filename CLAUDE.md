@@ -102,7 +102,7 @@ frontend/       →  type-only imports from core allowed (import type { ... })
 ## Code Standards
 
 - **TypeScript:** strict, no `any`, no `as` casts, no `enum` (use unions), named exports only
-- **ESM:** `"type": "module"` everywhere, `.js` extensions on local imports
+- **ESM:** `"type": "module"` everywhere. `.js` extensions in core/server/patterns (NodeNext). `.ts`/`.tsx` in frontend (bundler mode).
 - **Style:** kebab-case files, PascalCase classes/interfaces, camelCase functions
 - **Errors:** agents emit `StreamEvent` errors, never throw unhandled. Server catches all.
 - **Streaming:** non-negotiable — all LLM responses must stream

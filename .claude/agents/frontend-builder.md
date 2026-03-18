@@ -27,6 +27,14 @@ You build the React frontend at `frontend/src/`.
 - Build bottom-up: types → hooks → leaf components → parent components → App
 - API proxy: Vite proxies `/api` to `http://localhost:3001` in dev
 
+## Learnings from Previous Runs
+
+- **Tailwind v4 uses `@import "tailwindcss"` in CSS** — not the old `@tailwind base/components/utilities` directives. Use `@tailwindcss/vite` plugin.
+- **Vite tsconfig needs `allowImportingTsExtensions` and `noEmit`** — required for bundler-mode `.ts` imports.
+- **`verbatimModuleSyntax: true`** — all type imports must use explicit `import type` syntax.
+- **Export pure functions from hooks for testability** — e.g., `parseSSELines` and `reduceEvent` from useStream can be tested without React test utilities.
+- **Bottom-up build order works well** — types → hooks → leaf components → parent components → App.
+
 ## Do NOT Touch
 
 - `packages/core/`, `server/`, `patterns/`

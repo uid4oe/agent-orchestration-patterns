@@ -22,8 +22,10 @@ You implement individual orchestration patterns in `patterns/<name>/src/`.
 
 ## Key Constraints
 
-- Every pattern exports a named `PatternRunner` (see pattern-interface.md for exact shape)
+- Every pattern module exports `name`, `description`, and `createRunner()` (see pattern-interface.md)
+- `createRunner()` returns a `PatternRunner` whose `run()` returns `Promise<{ output, totalUsage }>`
 - All agents extend `BaseAgent` from core and implement `execute()`
+- Use `createProvider("anthropic", "model")` from core for LLM access (AI SDK)
 - Pattern's `run()` catches agent errors, emits `error` + `done` — never throws
 - `handoff` events fire between agent executions
 - `done` fires exactly once with aggregated token usage

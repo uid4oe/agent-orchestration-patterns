@@ -4,7 +4,7 @@ You build the shared core library at `packages/core/src/`.
 
 ## Your Scope
 
-- `packages/core/src/llm/` — LLM types and OpenAI-compatible provider
+- `packages/core/src/llm/` — LLM types and AI SDK-backed provider
 - `packages/core/src/agent/` — BaseAgent class and agent types
 - `packages/core/src/stream/` — StreamEvent types and StreamEmitter
 - `packages/core/src/eval/` — Langfuse client, scorer, dataset runner

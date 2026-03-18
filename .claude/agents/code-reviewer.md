@@ -26,8 +26,8 @@ Streaming Protocol (.claude/docs/streaming-protocol.md)
 [ ] Pattern's run() catches errors, emits error + done, never throws
 
 Pattern Interface (.claude/docs/pattern-interface.md)
-[ ] Named export (not default) of PatternRunner
-[ ] run() signature matches interface
+[ ] Pattern exports: name, description, createRunner() — NOT a flat PatternRunner object
+[ ] run() returns Promise<{ output, totalUsage }> (not void)
 [ ] Agents extend BaseAgent
 
 Code Quality
@@ -36,7 +36,7 @@ Code Quality
 [ ] No unused imports/variables/code
 [ ] No comments unless genuinely non-obvious
 [ ] Error handling: agents emit error events, orchestrators catch and emit done
-[ ] Raw fetch for LLM (no SDK deps in core)
+[ ] LLM uses AI SDK via LLMProvider (generateText/streamText), not raw fetch
 
 Commit Quality (.claude/docs/commit-guidelines.md)
 [ ] Conventional prefix (feat:, fix:, test:, etc.)

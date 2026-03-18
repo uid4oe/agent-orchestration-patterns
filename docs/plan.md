@@ -101,13 +101,12 @@ agent-orchestration-patterns/
 
 ## Core Design
 
-### LLM Layer (provider-agnostic via OpenAI-compatible API)
-- **Single adapter** using `/v1/chat/completions` format
-- Works with: OpenRouter, Ollama, OpenAI, Groq, Together
-- 3 env vars: `LLM_BASE_URL`, `LLM_API_KEY`, `LLM_MODEL`
-- Raw `fetch`, no SDK deps
-- **Streaming** via `stream: true` — yields chunks
-- Default: OpenRouter. Local: Ollama at `http://localhost:11434/v1`
+### LLM Layer (provider-agnostic via Vercel AI SDK)
+- **Vercel AI SDK** (`ai` + `@ai-sdk/*` provider packages) for unified multi-provider access
+- Supported providers: `"anthropic"`, `"openai"`, `"google"` (extensible)
+- Factory: `createProvider("anthropic", "claude-sonnet-4-20250514")`
+- **Streaming** via AI SDK's `streamText` — yields content chunks
+- `LLMProvider` class wraps AI SDK behind a stable API (`chat`, `chatStream`, `lastUsage`)
 
 ### Agent Base Class
 - Constructor: name, role, systemPrompt, provider
@@ -138,12 +137,15 @@ The Express server loads all 4 patterns at startup. Each pattern exports a `run(
 └─────────────────────────────────────────────────────┘
 ```
 
-**Pattern interface** — every pattern exports:
+**Pattern module** — every pattern package exports:
 ```typescript
+export const name: string;        // "router", "pipeline", etc.
+export const description: string; // one-line for the UI
+export function createRunner(): PatternRunner;
+
+// PatternRunner (from core):
 interface PatternRunner {
-  name: string;
-  description: string;
-  run(input: string, emitter: StreamEmitter): Promise<void>;
+  run(input: string, emitter: StreamEmitter): Promise<{ output: string; totalUsage: TokenUsage }>;
 }
 ```
 
@@ -256,7 +258,7 @@ volumes:
 - React 19 + Vite + Tailwind CSS
 - Langfuse JS SDK (evals, scoring, cost tracking)
 - Langfuse self-hosted (Docker) + Postgres
-- **No AI frameworks** — raw implementations
+- **Vercel AI SDK** (`ai` + `@ai-sdk/openai`, `@ai-sdk/anthropic`, `@ai-sdk/google`) for provider-agnostic LLM access
 
 ## Build Order
 
