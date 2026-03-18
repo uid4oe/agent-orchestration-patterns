@@ -1,6 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import type { PatternInfo } from "../types.ts";
 
+const PATTERN_ICONS: Record<string, string> = {
+  router: "\u2B95",
+  pipeline: "\u26D3",
+  supervisor: "\uD83D\uDC41",
+  debate: "\u2696",
+};
+
 interface PatternSelectorProps {
   selected: string | null;
   onSelect: (pattern: string) => void;
@@ -27,7 +34,6 @@ export function PatternSelector({
         if (!cancelled) {
           setPatterns(data);
           setLoading(false);
-          // Auto-select first pattern if none selected
           if (!selected && data.length > 0 && data[0]) {
             onSelect(data[0].name);
           }
@@ -58,8 +64,8 @@ export function PatternSelector({
 
   if (loading) {
     return (
-      <div className="flex items-center gap-2 px-4 py-3 text-sm text-gray-500">
-        <span className="h-3 w-3 rounded-full border-2 border-gray-600 border-t-gray-400 animate-spin" />
+      <div className="flex items-center gap-2 px-5 py-3 text-sm text-[var(--color-text-tertiary)]">
+        <span className="h-3.5 w-3.5 rounded-full border-2 border-[var(--color-border)] border-t-[var(--color-accent)] animate-spin-slow" />
         Loading patterns...
       </div>
     );
@@ -67,7 +73,7 @@ export function PatternSelector({
 
   if (error) {
     return (
-      <div className="px-4 py-3 text-sm text-amber-400">
+      <div className="px-5 py-3 text-sm text-amber-600">
         Could not load patterns: {error}
       </div>
     );
@@ -75,29 +81,33 @@ export function PatternSelector({
 
   if (patterns.length === 0) {
     return (
-      <div className="px-4 py-3 text-sm text-gray-500">
+      <div className="px-5 py-3 text-sm text-[var(--color-text-tertiary)]">
         No patterns available. Start the server with registered patterns.
       </div>
     );
   }
 
   return (
-    <div className="flex items-center gap-1 px-4 py-2 overflow-x-auto">
+    <div className="flex items-center gap-2 px-5 py-2.5 overflow-x-auto">
       {patterns.map((pattern) => {
         const isActive = pattern.name === selected;
+        const icon = PATTERN_ICONS[pattern.name.toLowerCase()];
         return (
           <button
             key={pattern.name}
             type="button"
             onClick={() => handleSelect(pattern.name)}
-            className={`shrink-0 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+            className={`shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200 ${
               isActive
-                ? "bg-blue-600/20 text-blue-300 border border-blue-500/30"
-                : "text-gray-400 hover:text-gray-200 hover:bg-gray-800/60 border border-transparent"
+                ? "bg-[var(--color-accent)] text-white shadow-sm"
+                : "text-[var(--color-text-secondary)] bg-[var(--color-surface-tertiary)] hover:bg-[var(--color-border)] hover:text-[var(--color-text-primary)]"
             }`}
             title={pattern.description}
           >
-            {pattern.name}
+            <span className="flex items-center gap-1.5">
+              {icon && <span className="text-xs">{icon}</span>}
+              {pattern.name}
+            </span>
           </button>
         );
       })}

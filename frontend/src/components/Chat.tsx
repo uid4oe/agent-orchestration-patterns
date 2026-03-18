@@ -72,24 +72,35 @@ export function Chat({
       {/* Message list */}
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto min-h-0 py-4 space-y-1"
+        className="flex-1 overflow-y-auto min-h-0 py-6 custom-scrollbar"
       >
         {messages.length === 0 && (
-          <div className="flex items-center justify-center h-full text-gray-500 text-sm">
-            Send a message to begin
+          <div className="flex flex-col items-center justify-center h-full text-[var(--color-text-tertiary)]">
+            <svg
+              className="h-10 w-10 mb-3 opacity-40"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={1.5}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z"
+              />
+            </svg>
+            <span className="text-sm">Send a message to begin</span>
           </div>
         )}
+
         {messages.map((msg) => {
           if (isUserMessage(msg)) {
             return (
-              <div key={msg.id} className="px-4 py-3">
-                <div className="flex items-start gap-3 max-w-3xl">
-                  <span className="inline-flex items-center rounded-md border border-gray-600/30 bg-gray-700/40 px-2 py-0.5 text-xs font-medium text-gray-300">
-                    you
-                  </span>
-                </div>
-                <div className="mt-1.5 text-sm leading-relaxed text-gray-100 whitespace-pre-wrap">
-                  {msg.content}
+              <div key={msg.id} className="animate-message-in flex justify-end px-5 py-3">
+                <div className="max-w-md">
+                  <div className="rounded-2xl rounded-br-md bg-[var(--color-accent)] px-4 py-2.5 text-sm text-white leading-relaxed whitespace-pre-wrap shadow-sm">
+                    {msg.content}
+                  </div>
                 </div>
               </div>
             );
@@ -98,20 +109,37 @@ export function Chat({
             return (
               <div
                 key={msg.id}
-                className="px-4 py-1.5 flex items-center gap-2 text-xs text-gray-500"
+                className="animate-message-in flex items-center gap-3 px-5 py-2 my-1"
               >
-                <span className="h-px flex-1 bg-gray-800" />
-                <span className="shrink-0">
-                  {msg.from}{" "}
-                  <span className="text-gray-600">&rarr;</span>{" "}
-                  {msg.to}
+                <span className="h-px flex-1 bg-[var(--color-border-light)]" />
+                <span className="shrink-0 flex items-center gap-1.5 text-xs text-[var(--color-text-tertiary)]">
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="opacity-60"
+                  >
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                  <span className="font-medium text-[var(--color-text-secondary)]">
+                    {msg.from}
+                  </span>
+                  <span className="opacity-50">&rarr;</span>
+                  <span className="font-medium text-[var(--color-text-secondary)]">
+                    {msg.to}
+                  </span>
                   {msg.reason && (
-                    <span className="text-gray-600 ml-1">
+                    <span className="opacity-60 ml-0.5">
                       &middot; {msg.reason}
                     </span>
                   )}
                 </span>
-                <span className="h-px flex-1 bg-gray-800" />
+                <span className="h-px flex-1 bg-[var(--color-border-light)]" />
               </div>
             );
           }
@@ -122,42 +150,49 @@ export function Chat({
         })}
 
         {error && (
-          <div className="px-4 py-2">
-            <div className="rounded-md border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-300">
+          <div className="px-5 py-2 animate-fade-in">
+            <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
               {error}
             </div>
           </div>
         )}
 
         {!isStreaming && totalUsage && (
-          <div className="px-4 py-1 text-[11px] text-gray-600 text-right">
+          <div className="px-5 py-1 text-[11px] text-[var(--color-text-tertiary)] text-right animate-fade-in">
             Total: {totalUsage.inputTokens + totalUsage.outputTokens} tokens
           </div>
         )}
       </div>
 
       {/* Input area */}
-      <div className="shrink-0 border-t border-gray-800 p-4">
-        <div className="flex items-end gap-2 max-w-3xl">
-          <textarea
-            ref={inputRef}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Type a message..."
-            rows={1}
-            className="flex-1 resize-none rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-gray-100 placeholder:text-gray-500 focus:border-blue-500/50 focus:outline-none focus:ring-1 focus:ring-blue-500/30 disabled:opacity-50"
-            disabled={isStreaming}
-          />
+      <div className="shrink-0 border-t border-[var(--color-border-light)] bg-white/80 backdrop-blur-sm p-4">
+        <div className="flex items-end gap-3 max-w-3xl mx-auto">
+          <div className="relative flex-1">
+            <textarea
+              ref={inputRef}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Type a message..."
+              rows={1}
+              className="w-full resize-none rounded-2xl border border-[var(--color-border)] bg-white px-4 py-2.5 text-sm text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/20 disabled:opacity-50 transition-shadow"
+              disabled={isStreaming}
+            />
+            {!isStreaming && (
+              <span className="absolute right-3 bottom-2.5 text-[10px] text-[var(--color-text-tertiary)] opacity-60 pointer-events-none select-none">
+                Enter to send
+              </span>
+            )}
+          </div>
           <button
             type="button"
             onClick={handleSend}
             disabled={isStreaming || !input.trim()}
-            className="shrink-0 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="shrink-0 rounded-full bg-[var(--color-accent)] px-5 py-2.5 text-sm font-medium text-white hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/40 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm"
           >
             {isStreaming ? (
               <span className="flex items-center gap-1.5">
-                <span className="h-3 w-3 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+                <span className="h-3.5 w-3.5 rounded-full border-2 border-white/30 border-t-white animate-spin-slow" />
                 Running
               </span>
             ) : (
