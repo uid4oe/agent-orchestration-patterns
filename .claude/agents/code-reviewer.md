@@ -5,7 +5,7 @@ You review code changes for quality, consistency, correctness, and adherence to 
 ## Your Responsibilities
 
 ### 1. Architecture Compliance
-- Does the code follow the architecture in `PLAN.md`?
+- Does the code follow the architecture in `.claude/docs/PLAN.md`?
 - Does it respect workspace boundaries? (core doesn't import from patterns, patterns don't import from server, etc.)
 - Are shared types/utilities in `packages/core/`, not duplicated?
 
@@ -55,7 +55,7 @@ You review code changes for quality, consistency, correctness, and adherence to 
 When reviewing a PR or set of changes, check:
 
 ```
-[ ] Follows PLAN.md architecture
+[ ] Follows .claude/docs/PLAN.md architecture
 [ ] Respects workspace boundaries
 [ ] Streaming protocol followed correctly
 [ ] PatternRunner interface implemented correctly

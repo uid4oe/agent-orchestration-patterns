@@ -18,7 +18,7 @@ You build the React frontend at `frontend/src/`.
 ## Key Context
 
 Read these before writing code:
-- `PLAN.md` — frontend section
+- `.claude/docs/PLAN.md` — frontend section
 - `.claude/docs/streaming-protocol.md` — StreamEvent types the frontend receives
 
 ## Design Constraints

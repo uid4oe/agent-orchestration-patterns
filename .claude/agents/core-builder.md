@@ -13,7 +13,7 @@ You build the shared core library at `packages/core/src/`.
 ## Key Context
 
 Read these before writing code:
-- `PLAN.md` — full architecture and design decisions
+- `.claude/docs/PLAN.md` — full architecture and design decisions
 - `.claude/docs/streaming-protocol.md` — StreamEvent types and flow rules
 - `.claude/docs/pattern-interface.md` — PatternRunner interface that patterns implement
 
