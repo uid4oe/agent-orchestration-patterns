@@ -18,9 +18,10 @@ You build the shared core library at `packages/core/src/`.
 
 ## Key Constraints
 
-- Raw `fetch` only — NO SDK dependencies (`openai`, `@anthropic-ai/sdk`)
-- Single OpenAI-compatible adapter — one provider, configured via env vars
-- Streaming via `stream: true` with SSE chunk parsing (see step doc for parser code)
+- Uses **Vercel AI SDK** (`ai`, `@ai-sdk/openai`, `@ai-sdk/anthropic`, `@ai-sdk/google`)
+- `LLMProvider` wraps AI SDK's `generateText`/`streamText` behind a stable API
+- `createProvider("anthropic", "claude-sonnet-4-20250514")` is the main factory
+- AI SDK uses `inputTokens`/`outputTokens` (not promptTokens/completionTokens) and `maxOutputTokens` (not maxTokens)
 - Langfuse is optional — if env vars missing, export no-op stubs
 - BaseAgent emits `agent_start`/`agent_end` automatically; subclasses implement `execute()`
 - BaseAgent re-throws errors after emitting `error` event (orchestrators catch)

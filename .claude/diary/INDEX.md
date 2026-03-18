@@ -8,6 +8,8 @@ Evolution log for the agent orchestration patterns project. Each entry captures 
 |------|------|-------|---------------|
 | 2026-03-18 | Step 1: Core Library | core-builder | tsconfig composite needed, commit grouping works better |
 | 2026-03-18 | Step 2: Server | server-builder | Dynamic imports for missing packages, server needs core composite flag |
+| 2026-03-18 | Step 3: Frontend Shell | frontend-builder | Tailwind v4 syntax, Vite tsconfig needs, bottom-up build order works |
+| 2026-03-18 | Refactor: LLM → AI SDK | core-builder | Stable API boundary absorbed change, AI SDK usage access patterns |
 
 ## How to Read
 

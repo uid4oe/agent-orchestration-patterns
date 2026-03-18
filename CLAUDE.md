@@ -108,7 +108,7 @@ frontend/       →  type-only imports from core allowed (import type { ... })
 - **Streaming:** non-negotiable — all LLM responses must stream
 - **Security:** API keys from env only, validate user input, no `eval()`
 - **Testing:** vitest, mock LLM provider, test behavior not implementation
-- **Dependencies:** minimal — raw `fetch` for LLM, no AI frameworks
+- **LLM:** Vercel AI SDK (`ai` + `@ai-sdk/*` providers) — use `createProvider("anthropic", "model-name")`
 
 ## Commit Rules
 
@@ -136,10 +136,11 @@ docker compose --profile langfuse up     # + Langfuse (:3002)
 ## Status
 
 - [x] Scaffold (root config, dirs, package.json files)
-- [ ] Step 1: Core Library
-- [ ] Step 2: Server
-- [ ] Step 3: Frontend Shell
-- [ ] Step 4a-4d: Patterns (parallel)
+- [x] Step 1: Core Library (6 commits, 29 tests)
+- [x] Step 2: Server (5 commits, 14 tests)
+- [x] Step 3: Frontend Shell (9 commits, 14 tests)
+- [x] Refactor: LLM layer → Vercel AI SDK (3 commits)
+- [ ] Step 4a-4d: Patterns (parallel) ← **next**
 - [ ] Step 5: Eval System
 - [ ] Step 6: Docker
 - [ ] Step 7: Documentation
