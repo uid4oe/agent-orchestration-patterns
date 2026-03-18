@@ -1,0 +1,55 @@
+{
+  "name": "router-intent-classification",
+  "items": [
+    {
+      "input": "My invoice shows the wrong amount for last month",
+      "expectedOutput": "BILLING",
+      "metadata": { "category": "billing", "difficulty": "easy" }
+    },
+    {
+      "input": "I need a refund for my last payment",
+      "expectedOutput": "BILLING",
+      "metadata": { "category": "billing", "difficulty": "easy" }
+    },
+    {
+      "input": "The app crashes when I try to upload a file larger than 10MB",
+      "expectedOutput": "TECHNICAL",
+      "metadata": { "category": "technical", "difficulty": "easy" }
+    },
+    {
+      "input": "I keep getting a 500 error when trying to log in",
+      "expectedOutput": "TECHNICAL",
+      "metadata": { "category": "technical", "difficulty": "easy" }
+    },
+    {
+      "input": "What are your business hours?",
+      "expectedOutput": "GENERAL",
+      "metadata": { "category": "general", "difficulty": "easy" }
+    },
+    {
+      "input": "How do I change my account email address?",
+      "expectedOutput": "GENERAL",
+      "metadata": { "category": "general", "difficulty": "easy" }
+    },
+    {
+      "input": "Can you explain the difference between the Pro and Enterprise plans and their pricing?",
+      "expectedOutput": "BILLING",
+      "metadata": { "category": "billing", "difficulty": "medium" }
+    },
+    {
+      "input": "The export feature is producing corrupted CSV files with missing columns",
+      "expectedOutput": "TECHNICAL",
+      "metadata": { "category": "technical", "difficulty": "medium" }
+    },
+    {
+      "input": "Do you offer any integrations with Slack or Microsoft Teams?",
+      "expectedOutput": "GENERAL",
+      "metadata": { "category": "general", "difficulty": "medium" }
+    },
+    {
+      "input": "My subscription renewed but I wanted to cancel it, and the charge seems higher than expected",
+      "expectedOutput": "BILLING",
+      "metadata": { "category": "billing", "difficulty": "hard" }
+    }
+  ]
+}
