@@ -50,33 +50,11 @@ export function App() {
 
   return (
     <div className="flex flex-col h-screen overflow-hidden p-2 lg:p-2.5 gap-2 lg:gap-2">
-      {/* Compact header */}
-      <header className="shrink-0 glass-strong rounded-2xl px-4 py-2 flex items-center gap-4">
-        <div className="flex items-center gap-2 shrink-0">
-          <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-sm shadow-blue-500/20">
-            <svg
-              className="h-3.5 w-3.5 text-white"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2.5}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"
-              />
-            </svg>
-          </div>
-          <h1 className="text-[13px] font-semibold text-[var(--color-text-primary)] tracking-tight hidden sm:block">
-            Orchestration
-          </h1>
-        </div>
-        <div className="h-5 w-px bg-[var(--color-border)] shrink-0 hidden sm:block" />
-        <PatternSelector
-          selected={selectedPattern}
-          onSelect={handlePatternSelect}
-        />
+      {/* Minimal header: just project name */}
+      <header className="shrink-0 flex items-center justify-between px-4 py-1">
+        <span className="text-[13px] font-semibold text-[var(--color-text-primary)] tracking-tight">
+          Agent Orchestration Patterns
+        </span>
       </header>
 
       {/* Main panels */}
@@ -99,9 +77,15 @@ export function App() {
         </div>
       </main>
 
-      {/* Input bar — centered at bottom, spanning full width */}
+      {/* Unified input bar: pattern selector + textarea + send */}
       <div className="shrink-0">
-        <div className="flex items-center gap-2 max-w-2xl mx-auto rounded-2xl glass-strong px-3 py-1.5 focus-within:ring-2 focus-within:ring-[var(--color-accent)]/15 transition-shadow">
+        <div className="flex items-center gap-2 max-w-2xl mx-auto rounded-2xl glass-strong px-2 py-1.5 focus-within:ring-2 focus-within:ring-[var(--color-accent)]/15 transition-shadow">
+          {/* Pattern selector inline */}
+          <PatternSelector
+            selected={selectedPattern}
+            onSelect={handlePatternSelect}
+          />
+          <div className="w-px h-6 bg-[var(--color-border)] shrink-0" />
           <textarea
             ref={inputRef}
             value={input}
@@ -109,7 +93,7 @@ export function App() {
             onKeyDown={handleKeyDown}
             placeholder="Type a message..."
             rows={1}
-            className="flex-1 resize-none bg-transparent px-2 py-1.5 text-sm text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)] focus:outline-none disabled:opacity-50"
+            className="flex-1 resize-none bg-transparent px-1 py-1.5 text-sm text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)] focus:outline-none disabled:opacity-50"
             disabled={isStreaming}
           />
           {!isStreaming && !input.trim() && (

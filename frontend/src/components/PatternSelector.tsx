@@ -88,26 +88,22 @@ export function PatternSelector({
   }
 
   return (
-    <div className="flex items-center gap-1.5 overflow-x-auto flex-1 min-w-0">
+    <div className="flex items-center gap-1 shrink-0">
       {patterns.map((pattern) => {
         const isActive = pattern.name === selected;
-        const icon = PATTERN_ICONS[pattern.name.toLowerCase()];
         return (
           <button
             key={pattern.name}
             type="button"
             onClick={() => handleSelect(pattern.name)}
-            className={`shrink-0 rounded-full px-3 py-1 text-[13px] font-medium transition-all duration-200 ${
+            className={`shrink-0 rounded-lg px-2.5 py-1 text-[12px] font-medium transition-all duration-150 ${
               isActive
-                ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-sm shadow-blue-500/20"
-                : "text-[var(--color-text-secondary)] hover:bg-white/60 hover:text-[var(--color-text-primary)]"
+                ? "bg-[var(--color-accent)] text-white"
+                : "text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)] hover:bg-black/[0.03]"
             }`}
             title={pattern.description}
           >
-            <span className="flex items-center gap-1.5">
-              {icon && <span className="text-[11px]">{icon}</span>}
-              {pattern.name}
-            </span>
+            {pattern.name}
           </button>
         );
       })}
