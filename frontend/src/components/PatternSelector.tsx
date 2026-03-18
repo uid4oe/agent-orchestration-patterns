@@ -64,31 +64,31 @@ export function PatternSelector({
 
   if (loading) {
     return (
-      <div className="flex items-center gap-2 px-5 py-3 text-sm text-[var(--color-text-tertiary)]">
-        <span className="h-3.5 w-3.5 rounded-full border-2 border-[var(--color-border)] border-t-[var(--color-accent)] animate-spin-slow" />
-        Loading patterns...
+      <div className="flex items-center gap-2 text-xs text-[var(--color-text-tertiary)]">
+        <span className="h-3 w-3 rounded-full border-2 border-[var(--color-border)] border-t-[var(--color-accent)] animate-spin-slow" />
+        Loading...
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="px-5 py-3 text-sm text-amber-600">
-        Could not load patterns: {error}
+      <div className="text-xs text-amber-600">
+        {error}
       </div>
     );
   }
 
   if (patterns.length === 0) {
     return (
-      <div className="px-5 py-3 text-sm text-[var(--color-text-tertiary)]">
-        No patterns available. Start the server with registered patterns.
+      <div className="text-xs text-[var(--color-text-tertiary)]">
+        No patterns
       </div>
     );
   }
 
   return (
-    <div className="flex items-center gap-2 px-5 py-2.5 overflow-x-auto">
+    <div className="flex items-center gap-1.5 overflow-x-auto flex-1 min-w-0">
       {patterns.map((pattern) => {
         const isActive = pattern.name === selected;
         const icon = PATTERN_ICONS[pattern.name.toLowerCase()];
@@ -97,15 +97,15 @@ export function PatternSelector({
             key={pattern.name}
             type="button"
             onClick={() => handleSelect(pattern.name)}
-            className={`shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200 ${
+            className={`shrink-0 rounded-full px-3 py-1 text-[13px] font-medium transition-all duration-200 ${
               isActive
                 ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-sm shadow-blue-500/20"
-                : "text-[var(--color-text-secondary)] bg-white/60 backdrop-blur-sm border border-white/50 hover:bg-white/80 hover:text-[var(--color-text-primary)]"
+                : "text-[var(--color-text-secondary)] hover:bg-white/60 hover:text-[var(--color-text-primary)]"
             }`}
             title={pattern.description}
           >
             <span className="flex items-center gap-1.5">
-              {icon && <span className="text-xs">{icon}</span>}
+              {icon && <span className="text-[11px]">{icon}</span>}
               {pattern.name}
             </span>
           </button>

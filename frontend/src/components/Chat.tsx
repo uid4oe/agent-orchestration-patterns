@@ -72,7 +72,7 @@ export function Chat({
       {/* Message list */}
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto min-h-0 py-6 custom-scrollbar"
+        className="flex-1 overflow-y-auto min-h-0 py-4 custom-scrollbar"
       >
         {messages.length === 0 && (
           <div className="flex flex-col items-center justify-center h-full text-[var(--color-text-tertiary)]">
