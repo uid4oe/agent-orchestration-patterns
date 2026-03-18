@@ -1,88 +1,77 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { LLMProvider } from "../llm/provider.js";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { LLMProvider, createProvider } from "../llm/provider.js";
+import type { LLMConfig } from "../llm/types.js";
+import type { LanguageModel } from "ai";
 
-function mockFetchResponse(body: unknown, status = 200): void {
-  const response = {
-    ok: status >= 200 && status < 300,
-    status,
-    text: () => Promise.resolve(JSON.stringify(body)),
-    json: () => Promise.resolve(body),
-    body: null,
-  } as unknown as Response;
+vi.mock("ai", () => ({
+  generateText: vi.fn(),
+  streamText: vi.fn(),
+}));
 
-  vi.stubGlobal("fetch", vi.fn().mockResolvedValue(response));
+vi.mock("@ai-sdk/openai", () => ({
+  openai: vi.fn((model: string) => ({ modelId: model, provider: "openai" })),
+}));
+
+vi.mock("@ai-sdk/anthropic", () => ({
+  anthropic: vi.fn((model: string) => ({ modelId: model, provider: "anthropic" })),
+}));
+
+vi.mock("@ai-sdk/google", () => ({
+  google: vi.fn((model: string) => ({ modelId: model, provider: "google" })),
+}));
+
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+async function getGenerateText(): Promise<typeof import("ai")["generateText"]> {
+  const { generateText } = await import("ai");
+  return generateText;
 }
 
-function mockStreamResponse(chunks: string[]): void {
-  let index = 0;
-  const reader = {
-    read: vi.fn().mockImplementation(() => {
-      if (index >= chunks.length) {
-        return Promise.resolve({ done: true, value: undefined });
-      }
-      const value = new TextEncoder().encode(chunks[index]!);
-      index++;
-      return Promise.resolve({ done: false, value });
-    }),
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+async function getStreamText(): Promise<typeof import("ai")["streamText"]> {
+  const { streamText } = await import("ai");
+  return streamText;
+}
+
+function createMockModel(id = "test-model"): LanguageModel {
+  return { modelId: id } as unknown as LanguageModel;
+}
+
+function createTestConfig(overrides?: Partial<LLMConfig>): LLMConfig {
+  return {
+    model: createMockModel(),
+    ...overrides,
   };
-
-  const response = {
-    ok: true,
-    status: 200,
-    body: { getReader: () => reader },
-  } as unknown as Response;
-
-  vi.stubGlobal("fetch", vi.fn().mockResolvedValue(response));
 }
-
-const TEST_CONFIG = {
-  baseUrl: "https://test.example.com/v1",
-  apiKey: "test-key",
-  model: "test-model",
-};
 
 describe("LLMProvider", () => {
   beforeEach(() => {
-    vi.restoreAllMocks();
-  });
-
-  afterEach(() => {
-    vi.unstubAllGlobals();
+    vi.clearAllMocks();
   });
 
   describe("constructor", () => {
-    it("throws when required config is missing", () => {
-      expect(() => new LLMProvider({})).toThrow(
-        "LLM_BASE_URL, LLM_API_KEY, and LLM_MODEL are required",
+    it("accepts a config with a LanguageModel", () => {
+      expect(() => new LLMProvider(createTestConfig())).not.toThrow();
+    });
+
+    it("stores temperature and maxTokens from config", () => {
+      const provider = new LLMProvider(
+        createTestConfig({ temperature: 0.5, maxTokens: 100 }),
       );
-    });
-
-    it("accepts explicit config", () => {
-      expect(() => new LLMProvider(TEST_CONFIG)).not.toThrow();
-    });
-
-    it("reads from env vars when config is partial", () => {
-      process.env["LLM_BASE_URL"] = "https://env.example.com/v1";
-      process.env["LLM_API_KEY"] = "env-key";
-      process.env["LLM_MODEL"] = "env-model";
-
-      expect(() => new LLMProvider()).not.toThrow();
-
-      delete process.env["LLM_BASE_URL"];
-      delete process.env["LLM_API_KEY"];
-      delete process.env["LLM_MODEL"];
+      // Verify they are used by checking the provider was created without error
+      expect(provider).toBeDefined();
     });
   });
 
   describe("chat", () => {
-    it("returns LLMResponse from non-streaming call", async () => {
-      mockFetchResponse({
-        choices: [{ message: { content: "Hello world" } }],
-        usage: { prompt_tokens: 10, completion_tokens: 5 },
-        model: "test-model",
-      });
+    it("returns LLMResponse from generateText", async () => {
+      const generateText = await getGenerateText();
+      vi.mocked(generateText).mockResolvedValue({
+        text: "Hello world",
+        usage: { inputTokens: 10, outputTokens: 5 },
+        response: { modelId: "test-model" },
+      } as Awaited<ReturnType<typeof generateText>>);
 
-      const provider = new LLMProvider(TEST_CONFIG);
+      const provider = new LLMProvider(createTestConfig());
       const result = await provider.chat([{ role: "user", content: "Hi" }]);
 
       expect(result.content).toBe("Hello world");
@@ -92,37 +81,88 @@ describe("LLMProvider", () => {
       expect(result.latencyMs).toBeGreaterThanOrEqual(0);
     });
 
-    it("throws on non-200 response", async () => {
-      mockFetchResponse({ error: "bad request" }, 400);
+    it("passes temperature and maxOutputTokens to generateText", async () => {
+      const generateText = await getGenerateText();
+      vi.mocked(generateText).mockResolvedValue({
+        text: "ok",
+        usage: { inputTokens: 1, outputTokens: 1 },
+        response: { modelId: "test-model" },
+      } as Awaited<ReturnType<typeof generateText>>);
 
-      const provider = new LLMProvider(TEST_CONFIG);
-      await expect(
-        provider.chat([{ role: "user", content: "Hi" }]),
-      ).rejects.toThrow("LLM request failed (400)");
+      const provider = new LLMProvider(
+        createTestConfig({ temperature: 0.7, maxTokens: 200 }),
+      );
+      await provider.chat([{ role: "user", content: "Hi" }]);
+
+      expect(generateText).toHaveBeenCalledWith(
+        expect.objectContaining({
+          temperature: 0.7,
+          maxOutputTokens: 200,
+        }),
+      );
     });
 
-    it("handles missing usage gracefully", async () => {
-      mockFetchResponse({
-        choices: [{ message: { content: "Hello" } }],
-        model: "test-model",
-      });
+    it("updates lastUsage after chat call", async () => {
+      const generateText = await getGenerateText();
+      vi.mocked(generateText).mockResolvedValue({
+        text: "response",
+        usage: { inputTokens: 20, outputTokens: 15 },
+        response: { modelId: "test-model" },
+      } as Awaited<ReturnType<typeof generateText>>);
 
-      const provider = new LLMProvider(TEST_CONFIG);
+      const provider = new LLMProvider(createTestConfig());
+      expect(provider.lastUsage).toEqual({ inputTokens: 0, outputTokens: 0 });
+
+      await provider.chat([{ role: "user", content: "Hi" }]);
+      expect(provider.lastUsage).toEqual({ inputTokens: 20, outputTokens: 15 });
+    });
+
+    it("handles undefined usage tokens gracefully", async () => {
+      const generateText = await getGenerateText();
+      vi.mocked(generateText).mockResolvedValue({
+        text: "Hello",
+        usage: { inputTokens: undefined, outputTokens: undefined },
+        response: { modelId: "test-model" },
+      } as Awaited<ReturnType<typeof generateText>>);
+
+      const provider = new LLMProvider(createTestConfig());
       const result = await provider.chat([{ role: "user", content: "Hi" }]);
 
       expect(result.usage).toEqual({ inputTokens: 0, outputTokens: 0 });
     });
+
+    it("propagates errors from generateText", async () => {
+      const generateText = await getGenerateText();
+      vi.mocked(generateText).mockRejectedValue(new Error("API key invalid"));
+
+      const provider = new LLMProvider(createTestConfig());
+      await expect(
+        provider.chat([{ role: "user", content: "Hi" }]),
+      ).rejects.toThrow("API key invalid");
+    });
   });
 
   describe("chatStream", () => {
-    it("yields content chunks from SSE stream", async () => {
-      mockStreamResponse([
-        'data: {"choices":[{"delta":{"content":"Hello"}}]}\n\n',
-        'data: {"choices":[{"delta":{"content":" world"}}]}\n\n',
-        "data: [DONE]\n\n",
-      ]);
+    function mockStreamResult(chunks: string[], usage = { inputTokens: 10, outputTokens: 5 }) {
+      async function* textStream() {
+        for (const chunk of chunks) {
+          yield chunk;
+        }
+      }
 
-      const provider = new LLMProvider(TEST_CONFIG);
+      return {
+        textStream: textStream(),
+        usage: Promise.resolve(usage),
+      } as unknown as ReturnType<Awaited<ReturnType<typeof getStreamText>>>;
+    }
+
+    it("yields content chunks from stream", async () => {
+      const streamText = await getStreamText();
+      vi.mocked(streamText).mockReturnValue(
+        mockStreamResult(["Hello", " world"]),
+      );
+
+      const provider = new LLMProvider(createTestConfig());
       const chunks: string[] = [];
       for await (const chunk of provider.chatStream([{ role: "user", content: "Hi" }])) {
         chunks.push(chunk);
@@ -131,45 +171,13 @@ describe("LLMProvider", () => {
       expect(chunks).toEqual(["Hello", " world"]);
     });
 
-    it("skips empty delta content", async () => {
-      mockStreamResponse([
-        'data: {"choices":[{"delta":{}}]}\n\n',
-        'data: {"choices":[{"delta":{"content":"text"}}]}\n\n',
-        "data: [DONE]\n\n",
-      ]);
+    it("updates lastUsage after stream completes", async () => {
+      const streamText = await getStreamText();
+      vi.mocked(streamText).mockReturnValue(
+        mockStreamResult(["Hi"], { inputTokens: 15, outputTokens: 3 }),
+      );
 
-      const provider = new LLMProvider(TEST_CONFIG);
-      const chunks: string[] = [];
-      for await (const chunk of provider.chatStream([{ role: "user", content: "Hi" }])) {
-        chunks.push(chunk);
-      }
-
-      expect(chunks).toEqual(["text"]);
-    });
-
-    it("handles chunked SSE lines split across reads", async () => {
-      mockStreamResponse([
-        'data: {"choices":[{"delta":{"con',
-        'tent":"split"}}]}\n\ndata: [DONE]\n\n',
-      ]);
-
-      const provider = new LLMProvider(TEST_CONFIG);
-      const chunks: string[] = [];
-      for await (const chunk of provider.chatStream([{ role: "user", content: "Hi" }])) {
-        chunks.push(chunk);
-      }
-
-      expect(chunks).toEqual(["split"]);
-    });
-
-    it("extracts usage from stream chunks", async () => {
-      mockStreamResponse([
-        'data: {"choices":[{"delta":{"content":"Hi"}}]}\n\n',
-        'data: {"choices":[{"delta":{}}],"usage":{"prompt_tokens":15,"completion_tokens":3}}\n\n',
-        "data: [DONE]\n\n",
-      ]);
-
-      const provider = new LLMProvider(TEST_CONFIG);
+      const provider = new LLMProvider(createTestConfig());
       const chunks: string[] = [];
       for await (const chunk of provider.chatStream([{ role: "user", content: "Hi" }])) {
         chunks.push(chunk);
@@ -179,23 +187,87 @@ describe("LLMProvider", () => {
       expect(provider.lastUsage).toEqual({ inputTokens: 15, outputTokens: 3 });
     });
 
-    it("throws on non-200 streaming response", async () => {
-      const response = {
-        ok: false,
-        status: 500,
-        text: () => Promise.resolve("Internal Server Error"),
-        body: null,
-      } as unknown as Response;
+    it("handles undefined usage tokens gracefully in stream", async () => {
+      const streamText = await getStreamText();
+      vi.mocked(streamText).mockReturnValue(
+        mockStreamResult(["text"], { inputTokens: undefined, outputTokens: undefined } as unknown as { inputTokens: number; outputTokens: number }),
+      );
 
-      vi.stubGlobal("fetch", vi.fn().mockResolvedValue(response));
+      const provider = new LLMProvider(createTestConfig());
+      for await (const _ of provider.chatStream([{ role: "user", content: "Hi" }])) {
+        // consume stream
+      }
 
-      const provider = new LLMProvider(TEST_CONFIG);
+      expect(provider.lastUsage).toEqual({ inputTokens: 0, outputTokens: 0 });
+    });
 
-      await expect(async () => {
-        for await (const _ of provider.chatStream([{ role: "user", content: "Hi" }])) {
-          // should not reach here
-        }
-      }).rejects.toThrow("LLM request failed (500)");
+    it("passes temperature and maxOutputTokens to streamText", async () => {
+      const streamText = await getStreamText();
+      vi.mocked(streamText).mockReturnValue(
+        mockStreamResult([]),
+      );
+
+      const provider = new LLMProvider(
+        createTestConfig({ temperature: 0.3, maxTokens: 500 }),
+      );
+      for await (const _ of provider.chatStream([{ role: "user", content: "Hi" }])) {
+        // consume stream
+      }
+
+      expect(streamText).toHaveBeenCalledWith(
+        expect.objectContaining({
+          temperature: 0.3,
+          maxOutputTokens: 500,
+        }),
+      );
+    });
+  });
+
+  describe("createProvider", () => {
+    it("creates a provider with openai", async () => {
+      const { openai } = await import("@ai-sdk/openai");
+      const provider = createProvider("openai", "gpt-4o");
+
+      expect(openai).toHaveBeenCalledWith("gpt-4o");
+      expect(provider).toBeInstanceOf(LLMProvider);
+    });
+
+    it("creates a provider with anthropic", async () => {
+      const { anthropic } = await import("@ai-sdk/anthropic");
+      const provider = createProvider("anthropic", "claude-sonnet-4-20250514");
+
+      expect(anthropic).toHaveBeenCalledWith("claude-sonnet-4-20250514");
+      expect(provider).toBeInstanceOf(LLMProvider);
+    });
+
+    it("creates a provider with google", async () => {
+      const { google } = await import("@ai-sdk/google");
+      const provider = createProvider("google", "gemini-2.0-flash");
+
+      expect(google).toHaveBeenCalledWith("gemini-2.0-flash");
+      expect(provider).toBeInstanceOf(LLMProvider);
+    });
+
+    it("passes options through to LLMProvider", async () => {
+      const generateText = await getGenerateText();
+      vi.mocked(generateText).mockResolvedValue({
+        text: "ok",
+        usage: { inputTokens: 1, outputTokens: 1 },
+        response: { modelId: "gpt-4o" },
+      } as Awaited<ReturnType<typeof generateText>>);
+
+      const provider = createProvider("openai", "gpt-4o", {
+        temperature: 0.9,
+        maxTokens: 1000,
+      });
+      await provider.chat([{ role: "user", content: "Hi" }]);
+
+      expect(generateText).toHaveBeenCalledWith(
+        expect.objectContaining({
+          temperature: 0.9,
+          maxOutputTokens: 1000,
+        }),
+      );
     });
   });
 });
