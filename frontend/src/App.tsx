@@ -22,17 +22,18 @@ export function App() {
   const handlePatternSelect = useCallback(
     (pattern: string) => {
       setSelectedPattern(pattern);
-      reset();
+      // Don't reset — keep previous conversation visible
     },
-    [reset],
+    [],
   );
 
   const handleSend = useCallback(() => {
     const trimmed = input.trim();
     if (!trimmed || !selectedPattern || isStreaming) return;
     setInput("");
+    reset();
     send(selectedPattern, trimmed);
-  }, [input, selectedPattern, isStreaming, send]);
+  }, [input, selectedPattern, isStreaming, send, reset]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -50,8 +51,8 @@ export function App() {
 
   return (
     <div className="flex flex-col h-screen overflow-hidden p-2 lg:p-2.5 gap-2 lg:gap-2">
-      {/* Minimal header: just project name */}
-      <header className="shrink-0 flex items-center justify-between px-4 py-1">
+      {/* Minimal header */}
+      <header className="shrink-0 flex items-center px-4 py-1">
         <span className="text-[13px] font-semibold text-[var(--color-text-primary)] tracking-tight">
           Agent Orchestration Patterns
         </span>
@@ -77,22 +78,39 @@ export function App() {
         </div>
       </main>
 
-      {/* Unified input bar: pattern selector + textarea + send */}
+      {/* Input bar */}
       <div className="shrink-0">
-        <div className="flex flex-col gap-1.5 max-w-4xl w-full mx-auto rounded-2xl glass-strong px-3 py-2 focus-within:ring-2 focus-within:ring-[var(--color-accent)]/15 transition-shadow">
-          {/* Textarea row */}
-          <textarea
-            ref={inputRef}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Type a message..."
-            rows={1}
-            className="w-full resize-none bg-transparent px-1 py-1 text-sm text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)] focus:outline-none disabled:opacity-50"
-            disabled={isStreaming}
-          />
-          {/* Bottom row: pattern tabs + send */}
+        <div className="max-w-2xl w-full mx-auto rounded-2xl glass-strong px-3 py-2 focus-within:ring-2 focus-within:ring-[var(--color-accent)]/15 transition-shadow">
+          {/* Top row: textarea + send */}
           <div className="flex items-center gap-2">
+            <textarea
+              ref={inputRef}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Type a message..."
+              rows={1}
+              className="flex-1 resize-none bg-transparent px-1 py-1.5 text-sm text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)] focus:outline-none disabled:opacity-50"
+              disabled={isStreaming}
+            />
+            <button
+              type="button"
+              onClick={handleSend}
+              disabled={isStreaming || !input.trim()}
+              className="shrink-0 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-1.5 text-sm font-medium text-white hover:brightness-110 focus:outline-none disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm shadow-blue-500/15"
+            >
+              {isStreaming ? (
+                <span className="flex items-center gap-1.5">
+                  <span className="h-3.5 w-3.5 rounded-full border-2 border-white/30 border-t-white animate-spin-slow" />
+                  Running
+                </span>
+              ) : (
+                "Send"
+              )}
+            </button>
+          </div>
+          {/* Bottom row: pattern tabs */}
+          <div className="flex items-center gap-2 mt-1.5 pt-1.5 border-t border-[var(--color-border-light)]">
             <PatternSelector
               selected={selectedPattern}
               onSelect={handlePatternSelect}
@@ -103,21 +121,6 @@ export function App() {
                 Enter &crarr;
               </span>
             )}
-            <button
-            type="button"
-            onClick={handleSend}
-            disabled={isStreaming || !input.trim()}
-            className="shrink-0 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-sm font-medium text-white hover:brightness-110 focus:outline-none disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm shadow-blue-500/15"
-          >
-            {isStreaming ? (
-              <span className="flex items-center gap-1.5">
-                <span className="h-3.5 w-3.5 rounded-full border-2 border-white/30 border-t-white animate-spin-slow" />
-                Running
-              </span>
-            ) : (
-              "Send"
-            )}
-            </button>
           </div>
         </div>
       </div>
