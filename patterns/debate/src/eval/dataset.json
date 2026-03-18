@@ -1,0 +1,40 @@
+{
+  "name": "debate-investment-theses",
+  "items": [
+    {
+      "input": "Should a retail investor allocate 10% of their portfolio to Bitcoin in 2026?",
+      "metadata": {
+        "criteria": ["argument_depth", "evidence_quality", "judge_reasoning"],
+        "topic": "cryptocurrency"
+      }
+    },
+    {
+      "input": "Is investing in commercial real estate REITs a better strategy than direct property ownership for building long-term wealth?",
+      "metadata": {
+        "criteria": ["argument_depth", "evidence_quality", "judge_reasoning"],
+        "topic": "real_estate"
+      }
+    },
+    {
+      "input": "Should a 30-year-old investor go 100% equities with no bond allocation?",
+      "metadata": {
+        "criteria": ["argument_depth", "evidence_quality", "judge_reasoning"],
+        "topic": "asset_allocation"
+      }
+    },
+    {
+      "input": "Are AI and semiconductor stocks overvalued given current price-to-earnings ratios?",
+      "metadata": {
+        "criteria": ["argument_depth", "evidence_quality", "judge_reasoning"],
+        "topic": "tech_stocks"
+      }
+    },
+    {
+      "input": "Should emerging market equities make up 20% of a diversified global portfolio?",
+      "metadata": {
+        "criteria": ["argument_depth", "evidence_quality", "judge_reasoning"],
+        "topic": "emerging_markets"
+      }
+    }
+  ]
+}
