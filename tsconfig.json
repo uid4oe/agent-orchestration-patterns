@@ -1,0 +1,11 @@
+{
+  "files": [],
+  "references": [
+    { "path": "packages/core" },
+    { "path": "server" },
+    { "path": "patterns/router" },
+    { "path": "patterns/pipeline" },
+    { "path": "patterns/supervisor" },
+    { "path": "patterns/debate" }
+  ]
+}
