@@ -141,6 +141,6 @@ docker compose --profile langfuse up     # + Langfuse (:3002)
 - [x] Step 3: Frontend Shell (9 commits, 14 tests)
 - [x] Refactor: LLM layer → Vercel AI SDK (3 commits)
 - [x] Step 4a-4d: Patterns — router(18), pipeline(10), supervisor(19), debate(6) tests
-- [ ] Step 5: Eval System ← **next**
-- [ ] Step 6: Docker
-- [ ] Step 7: Documentation
+- [x] Step 5: Eval System (Langfuse integration, auto dataset resolution)
+- [x] Step 6: Docker (server + frontend + Langfuse profile)
+- [x] Step 7: Documentation (root README, architecture, 4 pattern READMEs)

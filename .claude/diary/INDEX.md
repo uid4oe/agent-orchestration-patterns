@@ -12,6 +12,7 @@ Evolution log for the agent orchestration patterns project. Each entry captures 
 | 2026-03-18 | Refactor: LLM → AI SDK | core-builder | Stable API boundary absorbed change, AI SDK usage access patterns |
 | 2026-03-18 | Critical Review | orchestrator | PatternRunner sig mismatch, docs drift fast during refactors, cross-check agents |
 | 2026-03-18 | Step 4a-4d: Patterns | pattern-builder x4 | Parallel worktrees work, git clean before merge, protected config needs wrappers |
+| 2026-03-18 | Steps 5-7: Eval+Docker+Docs | eval/docker/docs builders | All remaining steps complete, project finished |
 
 ## How to Read
 
