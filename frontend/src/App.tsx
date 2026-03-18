@@ -116,9 +116,12 @@ export function App() {
               onSelect={handlePatternSelect}
             />
             <div className="flex-1" />
-            {!isStreaming && !input.trim() && (
-              <span className="text-[10px] text-[var(--color-text-tertiary)] opacity-40 pointer-events-none select-none shrink-0 hidden sm:block">
-                Enter &crarr;
+            {!isStreaming && (
+              <span className="text-[11px] text-[var(--color-text-tertiary)] pointer-events-none select-none shrink-0 hidden sm:flex items-center gap-1">
+                <kbd className="rounded bg-[var(--color-surface-tertiary)] px-1.5 py-0.5 text-[10px] font-mono font-medium text-[var(--color-text-secondary)]">
+                  &crarr;
+                </kbd>
+                <span className="text-[10px]">to send</span>
               </span>
             )}
           </div>
