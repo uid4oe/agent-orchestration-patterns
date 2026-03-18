@@ -1,5 +1,5 @@
 import { createProvider } from "@agent-patterns/core";
-import type { PatternRunner, StreamEmitter, TokenUsage } from "@agent-patterns/core";
+import type { PatternRunner, StreamEmitter, TokenUsage, ProviderName } from "@agent-patterns/core";
 import { BullDebater } from "./debaters/bull.js";
 import { BearDebater } from "./debaters/bear.js";
 import { Judge } from "./judge.js";
@@ -10,7 +10,7 @@ export const description = "Adversarial debate with bull, bear, and judge";
 
 export function createRunner(): PatternRunner {
   const provider = createProvider(
-    "openai",
+    (process.env["LLM_PROVIDER"] ?? "openai") as ProviderName,
     process.env["LLM_MODEL"] ?? "gpt-4o-mini",
   );
 
