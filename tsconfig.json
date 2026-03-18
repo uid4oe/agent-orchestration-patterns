@@ -3,6 +3,7 @@
   "references": [
     { "path": "packages/core" },
     { "path": "server" },
+    { "path": "frontend" },
     { "path": "patterns/router" },
     { "path": "patterns/pipeline" },
     { "path": "patterns/supervisor" },
