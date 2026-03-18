@@ -10,6 +10,7 @@ Evolution log for the agent orchestration patterns project. Each entry captures 
 | 2026-03-18 | Step 2: Server | server-builder | Dynamic imports for missing packages, server needs core composite flag |
 | 2026-03-18 | Step 3: Frontend Shell | frontend-builder | Tailwind v4 syntax, Vite tsconfig needs, bottom-up build order works |
 | 2026-03-18 | Refactor: LLM → AI SDK | core-builder | Stable API boundary absorbed change, AI SDK usage access patterns |
+| 2026-03-18 | Critical Review | orchestrator | PatternRunner sig mismatch, docs drift fast during refactors, cross-check agents |
 
 ## How to Read
 
