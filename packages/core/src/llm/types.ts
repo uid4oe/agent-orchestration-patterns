@@ -1,4 +1,7 @@
+import type { LanguageModel } from "ai";
 import type { TokenUsage } from "../stream/types.js";
+
+export type { LanguageModel } from "ai";
 
 export interface ChatMessage {
   role: "system" | "user" | "assistant";
@@ -13,9 +16,7 @@ export interface LLMResponse {
 }
 
 export interface LLMConfig {
-  baseUrl: string;
-  apiKey: string;
-  model: string;
+  model: LanguageModel;
   temperature?: number;
   maxTokens?: number;
 }

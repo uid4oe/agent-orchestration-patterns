@@ -1,6 +1,7 @@
 // LLM
-export type { ChatMessage, LLMResponse, LLMConfig } from "./llm/types.js";
-export { LLMProvider } from "./llm/provider.js";
+export type { ChatMessage, LLMResponse, LLMConfig, LanguageModel } from "./llm/types.js";
+export { LLMProvider, createProvider } from "./llm/provider.js";
+export type { ProviderName } from "./llm/provider.js";
 
 // Stream
 export type { TokenUsage, StreamEvent, StreamEmitter } from "./stream/types.js";

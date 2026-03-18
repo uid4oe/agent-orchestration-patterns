@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { LLMProvider, loadDataset, runEval } from "@agent-patterns/core";
+import { createProvider, loadDataset, runEval } from "@agent-patterns/core";
 import type { PatternMap } from "./patterns.js";
 
 export function createEvalRoutes(patterns: PatternMap): Router {
@@ -21,18 +21,12 @@ export function createEvalRoutes(patterns: PatternMap): Router {
 
     const criteria = Array.isArray(body.criteria) ? (body.criteria as string[]) : ["relevance"];
 
-    const apiKey = process.env.OPENAI_API_KEY ?? "";
-    if (apiKey.length === 0) {
-      res.status(500).json({ error: "OPENAI_API_KEY not configured" });
-      return;
-    }
-
     try {
       const dataset = await loadDataset(datasetPath);
-      const provider = new LLMProvider({
-        apiKey,
-        model: process.env.EVAL_MODEL ?? "gpt-4o-mini",
-      });
+      const provider = createProvider(
+        "openai",
+        process.env["EVAL_MODEL"] ?? "gpt-4o-mini",
+      );
       const result = await runEval({
         pattern: pattern.runner,
         dataset,
