@@ -1,0 +1,35 @@
+{
+  "name": "pipeline-content-creation",
+  "items": [
+    {
+      "input": "Write a blog post about the future of WebAssembly",
+      "metadata": {
+        "criteria": ["research_depth", "writing_quality", "editing_polish"]
+      }
+    },
+    {
+      "input": "Write a blog post about the rise of edge computing",
+      "metadata": {
+        "criteria": ["research_depth", "writing_quality", "editing_polish"]
+      }
+    },
+    {
+      "input": "Write a blog post about how AI is transforming healthcare",
+      "metadata": {
+        "criteria": ["research_depth", "writing_quality", "editing_polish"]
+      }
+    },
+    {
+      "input": "Write a blog post about sustainable software engineering practices",
+      "metadata": {
+        "criteria": ["research_depth", "writing_quality", "editing_polish"]
+      }
+    },
+    {
+      "input": "Write a blog post about the evolution of programming languages",
+      "metadata": {
+        "criteria": ["research_depth", "writing_quality", "editing_polish"]
+      }
+    }
+  ]
+}
