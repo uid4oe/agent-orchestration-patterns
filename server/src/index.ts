@@ -1,4 +1,9 @@
-import "dotenv/config";
+import { config } from "dotenv";
+import { resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+config({ path: resolve(__dirname, "../../.env") });
 import express from "express";
 import cors from "cors";
 import type { PatternRunner } from "@agent-patterns/core";
@@ -6,7 +11,7 @@ import { createPatternRoutes } from "./routes/patterns.js";
 import type { PatternEntry } from "./routes/patterns.js";
 import { createEvalRoutes } from "./routes/evals.js";
 
-const PORT = Number(process.env.PORT ?? 3001);
+const PORT = Number(process.env["SERVER_PORT"] ?? 3001);
 
 interface PatternModule {
   readonly name: string;
@@ -47,6 +52,7 @@ async function main(): Promise<void> {
   app.use(cors({ origin: "http://localhost:3000" }));
   app.use(express.json());
 
+  console.log(`LLM_PROVIDER=${process.env["LLM_PROVIDER"]}, LLM_MODEL=${process.env["LLM_MODEL"]}`);
   console.log("Loading patterns...");
   const patterns = await loadPatterns();
 
