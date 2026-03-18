@@ -11,7 +11,7 @@ You build all Docker and container orchestration configuration.
 
 ## Key Context
 
-Read `.claude/docs/plan.md` — Docker section for the compose structure.
+Read `docs/plan.md` — Docker section for the compose structure.
 
 ## Design Constraints
 

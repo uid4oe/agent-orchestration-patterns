@@ -8,12 +8,29 @@ Educational repo demonstrating 4 multi-agent orchestration patterns with a React
 
 | Document | Purpose |
 |----------|---------|
-| `.claude/docs/plan.md` | Full architecture, directory structure, core design, build order |
+| `docs/plan.md` | Full architecture, directory structure, core design |
 | `.claude/docs/streaming-protocol.md` | StreamEvent types, SSE format, emission rules |
 | `.claude/docs/pattern-interface.md` | PatternRunner contract, per-pattern specs |
 | `.claude/docs/commit-guidelines.md` | Commit sizing, grouping, message format |
 
-**Read .claude/docs/plan.md first** — it's the source of truth for all architecture decisions.
+### Implementation Steps
+
+Detailed step-by-step guides in `docs/steps/`. Steps 4a-4d can run **in parallel** once steps 1-3 are done.
+
+| Step | Doc | Agent | Depends On |
+|------|-----|-------|------------|
+| 1. Core Library | `docs/steps/01-core-library.md` | `core-builder` | — |
+| 2. Server | `docs/steps/02-server.md` | `server-builder` | Step 1 |
+| 3. Frontend Shell | `docs/steps/03-frontend-shell.md` | `frontend-builder` | Step 2 |
+| **4a. Router** | **`docs/steps/04a-pattern-router.md`** | **`pattern-builder`** | **Steps 1-2** |
+| **4b. Pipeline** | **`docs/steps/04b-pattern-pipeline.md`** | **`pattern-builder`** | **Steps 1-2** |
+| **4c. Supervisor** | **`docs/steps/04c-pattern-supervisor.md`** | **`pattern-builder`** | **Steps 1-2** |
+| **4d. Debate** | **`docs/steps/04d-pattern-debate.md`** | **`pattern-builder`** | **Steps 1-2** |
+| 5. Eval System | `docs/steps/05-eval-system.md` | `core-builder` + `server-builder` | Steps 1-2 + any pattern |
+| 6. Docker | `docs/steps/06-docker.md` | `docker-builder` | Steps 1-4 |
+| 7. Documentation | `docs/steps/07-documentation.md` | `docs-builder` | Steps 1-6 |
+
+**Read docs/plan.md first** — it's the source of truth for all architecture decisions. Then follow the step docs for implementation.
 
 ## Agent Team
 
@@ -145,21 +162,29 @@ docker compose --profile langfuse up  # everything including Langfuse
 
 ## Build Order
 
-Check `.claude/docs/plan.md` for what's done vs pending:
+See `docs/steps/` for detailed implementation guides per step.
 
-1. ~~Scaffold (root config, dirs, package.json files)~~ DONE
-2. Core — LLM types + provider → use `core-builder`
-3. Core — StreamEvent types → use `core-builder`
-4. Core — BaseAgent class → use `core-builder`
-5. Core — Langfuse integration → use `core-builder`
-6. Server — Express + SSE → use `server-builder`
-7. Pattern: Router → use `pattern-builder`
-8. Frontend — React app → use `frontend-builder`
-9. Pattern: Pipeline → use `pattern-builder`
-10. Pattern: Supervisor → use `pattern-builder`
-11. Pattern: Debate → use `pattern-builder`
-12. Eval system → use `core-builder` + `server-builder`
-13. Docker → use `docker-builder`
-14. Documentation → use `docs-builder`
+```
+Step 1: Core Library     ─── sequential ───→  Step 2: Server  ───→  Step 3: Frontend Shell
+                                                    │
+                                                    ├──→  Step 4a: Router    ──┐
+                                                    ├──→  Step 4b: Pipeline  ──┤ parallel
+                                                    ├──→  Step 4c: Supervisor──┤
+                                                    └──→  Step 4d: Debate    ──┘
+                                                                               │
+                                                    Step 5: Eval System  ←─────┘
+                                                    Step 6: Docker
+                                                    Step 7: Documentation
+```
+
+**Status:**
+- [x] Scaffold (root config, dirs, package.json files)
+- [ ] Step 1: Core Library → `docs/steps/01-core-library.md`
+- [ ] Step 2: Server → `docs/steps/02-server.md`
+- [ ] Step 3: Frontend Shell → `docs/steps/03-frontend-shell.md`
+- [ ] Step 4a-4d: Patterns (parallel) → `docs/steps/04a-*.md` through `04d-*.md`
+- [ ] Step 5: Eval System → `docs/steps/05-eval-system.md`
+- [ ] Step 6: Docker → `docs/steps/06-docker.md`
+- [ ] Step 7: Documentation → `docs/steps/07-documentation.md`
 
 **After each step: run `code-reviewer` before committing.**

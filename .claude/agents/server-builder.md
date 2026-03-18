@@ -12,7 +12,7 @@ You build the Express API server at `server/src/`.
 ## Key Context
 
 Read these before writing code:
-- `.claude/docs/plan.md` — server architecture section
+- `docs/plan.md` — server architecture section
 - `.claude/docs/streaming-protocol.md` — SSE format and event rules
 - `.claude/docs/pattern-interface.md` — PatternRunner interface you'll call
 - `packages/core/src/` — the types and classes you import from

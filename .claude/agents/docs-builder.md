@@ -10,7 +10,7 @@ You write documentation: READMEs, architecture docs, and pattern explanations.
 
 ## Key Context
 
-Read `.claude/docs/plan.md` for the full architecture and pattern descriptions.
+Read `docs/plan.md` for the full architecture and pattern descriptions.
 
 ## Root README Structure
 
@@ -72,7 +72,7 @@ graph TD
 ## Do NOT Touch
 
 - Any source code files
-- CLAUDE.md or .claude/docs/plan.md
+- CLAUDE.md or docs/plan.md
 - Agent definitions in `.claude/agents/`
 
 ## Commit Strategy

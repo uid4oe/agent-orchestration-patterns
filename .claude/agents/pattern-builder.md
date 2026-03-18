@@ -13,7 +13,7 @@ You implement individual orchestration patterns in `patterns/<name>/src/`.
 ## Key Context
 
 Read these before writing code:
-- `.claude/docs/plan.md` — pattern descriptions and demo scenarios
+- `docs/plan.md` — pattern descriptions and demo scenarios
 - `.claude/docs/pattern-interface.md` — PatternRunner contract (MUST follow)
 - `.claude/docs/streaming-protocol.md` — event emission rules
 - `packages/core/src/agent/base-agent.ts` — BaseAgent you extend
