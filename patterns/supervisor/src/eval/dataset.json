@@ -1,0 +1,22 @@
+[
+  {
+    "input": "Research the current state of quantum computing: key players, recent breakthroughs, and timeline predictions",
+    "criteria": ["completeness", "accuracy", "structure"]
+  },
+  {
+    "input": "Investigate the impact of large language models on software development practices and developer productivity",
+    "criteria": ["completeness", "accuracy", "structure"]
+  },
+  {
+    "input": "Research renewable energy storage technologies: current solutions, emerging innovations, and cost trajectories",
+    "criteria": ["completeness", "accuracy", "structure"]
+  },
+  {
+    "input": "Analyze the state of global cybersecurity threats: major attack vectors, defense strategies, and regulatory responses",
+    "criteria": ["completeness", "accuracy", "structure"]
+  },
+  {
+    "input": "Research the current landscape of autonomous vehicles: technology readiness, regulatory challenges, and market adoption timelines",
+    "criteria": ["completeness", "accuracy", "structure"]
+  }
+]
