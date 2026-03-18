@@ -4,82 +4,36 @@ You build the React frontend at `frontend/src/`.
 
 ## Your Scope
 
-- `frontend/src/App.tsx` — layout with pattern selector, chat panel, trace panel
-- `frontend/src/components/Chat.tsx` — message list + input box
-- `frontend/src/components/MessageBubble.tsx` — agent message with name/role badge
-- `frontend/src/components/TraceView.tsx` — inline trace visualization (builds live)
-- `frontend/src/components/PatternSelector.tsx` — dropdown to pick pattern
-- `frontend/src/hooks/useStream.ts` — SSE hook that parses stream events
-- `frontend/src/types.ts` — shared frontend types
-- `frontend/src/main.tsx` — React entry point
-- `frontend/vite.config.ts` — Vite configuration
-- Tailwind CSS configuration
+- `frontend/index.html` — Vite entry point
+- `frontend/vite.config.ts` — Vite config with React plugin and API proxy
+- `frontend/src/main.tsx` — React mount
+- `frontend/src/App.tsx` — layout with pattern selector, chat, trace panels
+- `frontend/src/components/` — Chat, MessageBubble, TraceView, PatternSelector
+- `frontend/src/hooks/useStream.ts` — SSE streaming hook
+- `frontend/src/types.ts` — frontend types (use `import type` from core where possible)
 
-## Key Context
+## Read Before Starting
 
-Read these before writing code:
-- `docs/plan.md` — frontend section
-- `.claude/docs/streaming-protocol.md` — StreamEvent types the frontend receives
+1. `docs/steps/03-frontend-shell.md` — **your implementation guide**
+2. `.claude/docs/streaming-protocol.md` — StreamEvent types you receive via SSE
 
-## Design Constraints
+## Key Constraints
 
-### Layout
-- Pattern selector at top
-- Two-panel layout below: **Chat** (left) + **Trace** (right)
-- Responsive — stack panels vertically on mobile
-
-### Chat Panel (`Chat.tsx` + `MessageBubble.tsx`)
-- Input box at bottom, messages scroll up
-- Each agent message shows a colored badge with agent name and role
-- Streaming: chunks append to the current message bubble in real-time
-- User messages are visually distinct from agent messages
-- `handoff` events show as a subtle system message ("Routing to billing specialist...")
-
-### Trace Panel (`TraceView.tsx`)
-- Builds live as stream events arrive
-- Agents rendered as nodes (boxes/pills)
-- Handoffs rendered as arrows between nodes
-- Each node shows: agent name, status (running/done/error), token count, latency
-- Status updates in real-time: gray (pending) → blue (running) → green (done) → red (error)
-- Clear visual distinction between different trace topologies (linear for pipeline, branching for supervisor, etc.)
-
-### useStream Hook (`hooks/useStream.ts`)
-- Takes pattern name and input as params
-- Uses `fetch` with streaming body reader (NOT EventSource — POST doesn't work with EventSource)
-- Parses SSE `data:` lines into `StreamEvent` objects
-- Returns: `{ events, messages, traceNodes, isStreaming, error, send }`
-- `send(input)` triggers a new request
-- Manages chat message state: accumulates chunks into complete messages grouped by agent
-
-### PatternSelector (`PatternSelector.tsx`)
-- Fetches available patterns from `GET /api/patterns`
-- Dropdown/tabs showing pattern name and description
-- Switching patterns clears chat and trace state
-
-### Styling
-- Tailwind CSS v4
-- Clean, minimal, dark/light mode support
-- No component library — raw Tailwind utilities
-
-### Vite Config
-- React plugin
-- Proxy `/api` to `http://localhost:3001` in dev mode
+- React 19, Vite, Tailwind CSS v4
+- Use `import type { StreamEvent, TokenUsage } from "@agent-patterns/core"` for shared types
+- NO runtime imports from other workspaces — only `import type`
+- `useStream` uses `fetch` + `ReadableStream` (not EventSource — POST doesn't work with EventSource)
+- SSE parsing: split on `\n\n`, extract `data:` prefix, JSON.parse each event
+- Build bottom-up: types → hooks → leaf components → parent components → App
+- API proxy: Vite proxies `/api` to `http://localhost:3001` in dev
 
 ## Do NOT Touch
 
-- `packages/core/` — that's core-builder's domain
-- `server/` — that's server-builder's domain
-- `patterns/` — that's pattern-builder's domain
+- `packages/core/`, `server/`, `patterns/`
 
-## Commit Strategy
+## Process
 
-Follow `.claude/docs/commit-guidelines.md`. Build bottom-up:
-1. Vite config + Tailwind setup + main.tsx entry point
-2. Frontend types (`types.ts`)
-3. `useStream` hook
-4. `MessageBubble` component
-5. `Chat` component (uses MessageBubble)
-6. `TraceView` component
-7. `PatternSelector` component
-8. `App.tsx` layout (uses all components)
-9. Tests (separate commits)
+1. Follow `docs/steps/03-frontend-shell.md` implementation order
+2. Self-check: `npm run dev:frontend` starts, UI renders
+3. Run `code-reviewer` before committing
+4. Follow `.claude/docs/commit-guidelines.md`

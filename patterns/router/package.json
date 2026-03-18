@@ -7,6 +7,6 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "@agent-patterns/core": "workspace:*"
+    "@agent-patterns/core": "*"
   }
 }

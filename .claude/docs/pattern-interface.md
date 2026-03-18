@@ -2,7 +2,7 @@
 
 ## PatternRunner
 
-Every pattern MUST export a `PatternRunner` as its default export from `src/index.ts`:
+Every pattern MUST export a named `PatternRunner` instance from `src/index.ts`:
 
 ```typescript
 export interface PatternRunner {
@@ -18,38 +18,57 @@ export interface PatternRunner {
 - `run()` MUST emit `agent_start`/`agent_end` for every agent invocation
 - `run()` MUST emit `handoff` when passing work between agents
 - `run()` MUST emit `done` as the final event with aggregated token usage
-- `run()` MUST handle errors gracefully — emit `error` event, then `done`
+- `run()` MUST handle errors gracefully — catch agent errors, emit `error` event, then `done`
 - `run()` should NOT throw — all errors are communicated via events
 
-## Pattern Implementations
+## Error Handling
 
-### Router (customer support)
-- RouterAgent classifies intent → delegates to specialist
-- Specialists: billing, technical, general
-- Router NEVER answers directly — only routes
-
-### Pipeline (content creation)
-- Sequential: researcher → writer → editor
-- Each stage receives previous stage's output
-- Pipeline class manages the chain
-
-### Supervisor (research task)
-- SupervisorAgent plans subtasks, dispatches to workers
-- Workers: search, analysis, summary
-- Supervisor reviews output, can retry/redirect (max 3 iterations)
-
-### Debate (investment analysis)
-- DebateArena manages rounds
-- Bull argues FOR, Bear argues AGAINST
-- 2 rounds, then Judge evaluates and produces verdict
-- Each debater sees accumulated transcript
-
-## Registering Patterns
-
-The server imports all patterns at startup:
 ```typescript
-import { router } from "../patterns/router/src/index.js";
-import { pipeline } from "../patterns/pipeline/src/index.js";
-// ...
+async run(input: string, emitter: StreamEmitter): Promise<void> {
+  const totalUsage: TokenUsage = { inputTokens: 0, outputTokens: 0 };
+  try {
+    // orchestration logic — call agents, accumulate usage...
+  } catch (err) {
+    emitter.emit({ type: "error", agent: "system", message: String(err) });
+  } finally {
+    emitter.emit({ type: "done", totalUsage });
+  }
+}
+```
+
+## Exporting from Patterns
+
+Each pattern's `src/index.ts` exports a named `PatternRunner`:
+
+```typescript
+// patterns/router/src/index.ts
+import type { PatternRunner, StreamEmitter } from "@agent-patterns/core";
+
+export const router: PatternRunner = {
+  name: "router",
+  description: "Intent-based delegation to specialist agents",
+  async run(input, emitter) {
+    // orchestration logic...
+  }
+};
+```
+
+## Registering with Server
+
+The server imports all patterns by name at startup:
+
+```typescript
+// server/src/index.ts
+import { router } from "@agent-patterns/router";
+import { pipeline } from "@agent-patterns/pipeline";
+import { supervisor } from "@agent-patterns/supervisor";
+import { debate } from "@agent-patterns/debate";
+
 const patterns: Record<string, PatternRunner> = { router, pipeline, supervisor, debate };
 ```
+
+Patterns that don't exist yet can be commented out during development.
+
+## Pattern Details
+
+See `docs/steps/04a-*.md` through `04d-*.md` for full implementation guides.

@@ -64,13 +64,63 @@ interface StreamEmitter {
 
 Single class using OpenAI-compatible `/v1/chat/completions`:
 
-- Constructor takes `LLMConfig` (or reads from env)
+- Constructor takes `LLMConfig` (or reads from env with validation)
 - `chat(messages: ChatMessage[]): Promise<LLMResponse>` — non-streaming
 - `chatStream(messages: ChatMessage[]): AsyncGenerator<string>` — streaming, yields content chunks
 - Uses raw `fetch`, no SDK
-- Handles streaming SSE parsing (`data: [DONE]`, `data: {...}`)
-- Extracts token usage from final response (handle missing gracefully — Ollama may not report it)
 - Measures latency internally
+
+**Env validation on construction:**
+```typescript
+const baseUrl = config?.baseUrl ?? process.env.LLM_BASE_URL;
+const apiKey = config?.apiKey ?? process.env.LLM_API_KEY;
+const model = config?.model ?? process.env.LLM_MODEL;
+if (!baseUrl || !apiKey || !model) {
+  throw new Error("LLM_BASE_URL, LLM_API_KEY, and LLM_MODEL are required");
+}
+```
+
+**SSE streaming parser for `chatStream()`:**
+```typescript
+async *chatStream(messages: ChatMessage[]): AsyncGenerator<string> {
+  const res = await fetch(`${this.baseUrl}/chat/completions`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${this.apiKey}`,
+    },
+    body: JSON.stringify({ model: this.model, messages, stream: true }),
+  });
+
+  const reader = res.body!.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split("\n");
+    buffer = lines.pop()!; // keep incomplete line in buffer
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed || !trimmed.startsWith("data: ")) continue;
+      const data = trimmed.slice(6);
+      if (data === "[DONE]") return;
+
+      const parsed = JSON.parse(data);
+      const content = parsed.choices?.[0]?.delta?.content;
+      if (content) yield content;
+    }
+  }
+}
+```
+
+**Token usage extraction** — read from the final non-streamed call or from `usage` field in the last SSE chunk (OpenRouter includes this). Default to `{ inputTokens: 0, outputTokens: 0 }` if provider doesn't report usage (Ollama).
+
+**Error handling** — if `fetch` fails or returns non-200, throw with status and body. Callers (BaseAgent) handle the error.
 
 **Commit:** `feat: implement OpenAI-compatible LLM provider with streaming`
 
@@ -97,19 +147,47 @@ interface AgentResult {
 
 Abstract class:
 
-- Constructor takes `AgentConfig`
-- `run(input: string, emitter: StreamEmitter): Promise<AgentResult>`:
-  - Emits `agent_start` with name and role
-  - Calls `this.execute(input, emitter)` (abstract)
-  - Measures duration
-  - Emits `agent_end` with duration and token usage
-  - Returns `AgentResult`
-  - Catches errors → emits `error` event, re-throws
-- Protected `chatStream(messages, emitter)` helper:
-  - Calls provider.chatStream()
-  - For each chunk: emits `chunk` event AND accumulates full response
-  - Returns full response + usage
-- Subclasses implement `execute(input, emitter): Promise<AgentResult>`
+```typescript
+abstract class BaseAgent {
+  constructor(protected config: AgentConfig) {}
+
+  async run(input: string, emitter: StreamEmitter): Promise<AgentResult> {
+    const start = Date.now();
+    emitter.emit({ type: "agent_start", agent: this.config.name, role: this.config.role });
+
+    try {
+      const result = await this.execute(input, emitter);
+      const durationMs = Date.now() - start;
+      emitter.emit({ type: "agent_end", agent: this.config.name, durationMs, usage: result.usage });
+      return { ...result, durationMs };
+    } catch (err) {
+      emitter.emit({ type: "error", agent: this.config.name, message: String(err) });
+      throw err; // re-throw — pattern orchestrator catches and emits "done"
+    }
+  }
+
+  protected abstract execute(input: string, emitter: StreamEmitter): Promise<AgentResult>;
+
+  /** Helper: stream LLM response, emit chunks, return full output + usage */
+  protected async chatStream(
+    messages: ChatMessage[],
+    emitter: StreamEmitter
+  ): Promise<{ output: string; usage: TokenUsage }> {
+    let output = "";
+    for await (const chunk of this.config.provider.chatStream(messages)) {
+      output += chunk;
+      emitter.emit({ type: "chunk", agent: this.config.name, content: chunk });
+    }
+    const usage = this.config.provider.lastUsage ?? { inputTokens: 0, outputTokens: 0 };
+    return { output, usage };
+  }
+}
+```
+
+**Error handling contract:**
+- `execute()` may throw — BaseAgent emits `error` event AND re-throws
+- Pattern orchestrators (router, pipeline, etc.) catch errors and emit `done`
+- This means agents don't swallow errors — the orchestrator decides what to do
 
 **Commit:** `feat: implement BaseAgent with streaming and event emission`
 

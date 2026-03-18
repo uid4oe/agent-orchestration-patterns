@@ -56,16 +56,25 @@ Use **conventional commit** prefixes:
 
 ### Good Commit Sequence (example: Router pattern)
 
+A module can span 2-3 tightly coupled files. Don't micro-commit every single file.
+
 ```
-1. feat: add RouterAgent with intent classification
-2. feat: add billing specialist agent
-3. feat: add technical specialist agent
-4. feat: add general specialist agent
-5. feat: add router orchestrator connecting agent to specialists
-6. feat: add router pattern entry point and PatternRunner export
-7. test: add tests for router intent classification
-8. test: add tests for router end-to-end orchestration
-9. chore: add router eval dataset
+1. feat: add router specialist agents (billing, technical, general)
+2. feat: add router agent with intent classification
+3. feat: add router pattern orchestrator and PatternRunner export
+4. test: add tests for router pattern
+5. chore: add router eval dataset
+```
+
+### Good Commit Sequence (example: Core library)
+
+```
+1. feat: add LLM types and stream event types
+2. feat: implement OpenAI-compatible LLM provider with streaming
+3. feat: implement BaseAgent with event emission
+4. feat: add Langfuse integration and eval utilities
+5. feat: add core barrel exports
+6. test: add tests for core library
 ```
 
 ## Git Best Practices
