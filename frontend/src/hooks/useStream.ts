@@ -175,9 +175,40 @@ interface UseStreamReturn {
   reset: () => void;
 }
 
-export function useStream(): UseStreamReturn {
-  const [state, setState] = useState<StreamState>(createInitialState);
+export function useStream(activePattern: string | null): UseStreamReturn {
+  const [state, setStateRaw] = useState<StreamState>(createInitialState);
+  const stateRef = useRef<StreamState>(state);
   const abortRef = useRef<AbortController | null>(null);
+  const stateMapRef = useRef<Map<string, StreamState>>(new Map());
+  const prevPatternRef = useRef<string | null>(null);
+
+  // Wrapper that keeps the ref in sync with state
+  const setState: typeof setStateRaw = useCallback((action) => {
+    setStateRaw((prev) => {
+      const next = typeof action === "function" ? action(prev) : action;
+      stateRef.current = next;
+      return next;
+    });
+  }, []);
+
+  // When active pattern changes, snapshot current state and restore the new pattern's state
+  if (activePattern !== prevPatternRef.current) {
+    if (prevPatternRef.current !== null) {
+      stateMapRef.current.set(prevPatternRef.current, stateRef.current);
+    }
+    prevPatternRef.current = activePattern;
+
+    if (activePattern !== null) {
+      const cached = stateMapRef.current.get(activePattern);
+      const next = cached ?? createInitialState();
+      stateRef.current = next;
+      setStateRaw(next);
+    } else {
+      const next = createInitialState();
+      stateRef.current = next;
+      setStateRaw(next);
+    }
+  }
 
   const reset = useCallback(() => {
     if (abortRef.current) {
@@ -185,7 +216,7 @@ export function useStream(): UseStreamReturn {
       abortRef.current = null;
     }
     setState(createInitialState());
-  }, []);
+  }, [setState]);
 
   const send = useCallback((pattern: string, input: string) => {
     if (abortRef.current) {

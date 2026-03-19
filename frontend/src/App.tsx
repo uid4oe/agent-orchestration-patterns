@@ -16,8 +16,7 @@ export function App() {
     error,
     totalUsage,
     send,
-    reset,
-  } = useStream();
+  } = useStream(selectedPattern);
 
   const handlePatternSelect = useCallback(
     (pattern: string) => {
@@ -31,9 +30,8 @@ export function App() {
     const trimmed = input.trim();
     if (!trimmed || !selectedPattern || isStreaming) return;
     setInput("");
-    reset();
     send(selectedPattern, trimmed);
-  }, [input, selectedPattern, isStreaming, send, reset]);
+  }, [input, selectedPattern, isStreaming, send]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -125,6 +123,7 @@ export function App() {
             <PatternSelector
               selected={selectedPattern}
               onSelect={handlePatternSelect}
+              isStreaming={isStreaming}
             />
             <div className="flex-1" />
             {!isStreaming && (
