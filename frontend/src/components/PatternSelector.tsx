@@ -13,11 +13,13 @@ const PATTERN_ICONS: Record<string, string> = {
 interface PatternSelectorProps {
   selected: string | null;
   onSelect: (pattern: string) => void;
+  isStreaming?: boolean;
 }
 
 export function PatternSelector({
   selected,
   onSelect,
+  isStreaming = false,
 }: PatternSelectorProps) {
   const [patterns, setPatterns] = useState<PatternInfo[]>([]);
   const [loading, setLoading] = useState(true);
@@ -57,11 +59,11 @@ export function PatternSelector({
 
   const handleSelect = useCallback(
     (name: string) => {
-      if (name !== selected) {
+      if (name !== selected && !isStreaming) {
         onSelect(name);
       }
     },
-    [selected, onSelect],
+    [selected, onSelect, isStreaming],
   );
 
   if (loading) {
@@ -98,14 +100,20 @@ export function PatternSelector({
             key={pattern.name}
             type="button"
             onClick={() => handleSelect(pattern.name)}
-            className={`shrink-0 rounded-lg px-2.5 py-1 text-[12px] font-medium transition-all duration-150 ${
+            disabled={isStreaming && !isActive}
+            className={`shrink-0 rounded-lg px-2.5 py-1 text-[12px] font-medium transition-all duration-150 flex items-center gap-1.5 ${
               isActive
                 ? "bg-[var(--color-accent)] text-white"
-                : "text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)] hover:bg-black/[0.03]"
+                : isStreaming
+                  ? "text-[var(--color-text-tertiary)] opacity-40 cursor-not-allowed"
+                  : "text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)] hover:bg-black/[0.03]"
             }`}
             title={pattern.description}
           >
             {pattern.name}
+            {isActive && isStreaming && (
+              <span className="h-3 w-3 rounded-full border-[1.5px] border-white/40 border-t-white animate-spin-slow" />
+            )}
           </button>
         );
       })}
