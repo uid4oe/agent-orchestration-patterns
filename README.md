@@ -1,6 +1,6 @@
 # Agent Orchestration Patterns
 
-Educational project demonstrating 4 multi-agent orchestration patterns with real-time streaming, inline trace visualization, and LLM-as-judge evals.
+Educational project demonstrating 6 multi-agent orchestration patterns with real-time streaming, inline trace visualization, and LLM-as-judge evals.
 
 ## Architecture
 
@@ -11,10 +11,14 @@ graph LR
     Server --> Pipeline[Pipeline Pattern]
     Server --> Supervisor[Supervisor Pattern]
     Server --> Debate[Debate Pattern]
+    Server --> Swarm[Swarm Pattern]
+    Server --> MapReduce[Map-Reduce Pattern]
     Router --> LLM[LLM Provider]
     Pipeline --> LLM
     Supervisor --> LLM
     Debate --> LLM
+    Swarm --> LLM
+    MapReduce --> LLM
     Server -.->|optional| Langfuse[Langfuse :3002]
 ```
 
@@ -54,6 +58,8 @@ Open http://localhost:3000, select a pattern, and send a message.
 | **[Pipeline](patterns/pipeline/)** | Sequential chain: researcher -> writer -> editor | Content creation, data processing, multi-step transforms |
 | **[Supervisor](patterns/supervisor/)** | Plans subtasks, dispatches workers, reviews quality with retry | Research tasks, complex queries needing quality assurance |
 | **[Debate](patterns/debate/)** | Adversarial bull/bear arguments judged by neutral agent | Investment analysis, decision-making, exploring both sides |
+| **[Swarm](patterns/swarm/)** | Dynamic peer-to-peer agent handoffs without central routing | Customer service, multi-department routing, emergent workflows |
+| **[Map-Reduce](patterns/map-reduce/)** | Parallel fan-out to mappers, then merged reduction | Multi-faceted analysis, document processing, parallel research |
 
 ## Docker
 
@@ -91,7 +97,9 @@ agent-orchestration-patterns/
 │   ├── router/          # Intent classification -> specialist dispatch
 │   ├── pipeline/        # Sequential stage chain (research -> write -> edit)
 │   ├── supervisor/      # Plan -> dispatch -> review -> retry loop
-│   └── debate/          # Multi-round bull/bear debate + judge verdict
+│   ├── debate/          # Multi-round bull/bear debate + judge verdict
+│   ├── swarm/           # Dynamic agent-to-agent handoffs
+│   └── map-reduce/      # Parallel fan-out mappers + merged reduction
 ├── docs/                # Architecture docs, implementation guides
 └── docker-compose.yml
 ```

@@ -92,6 +92,7 @@ Single commit updating:
 
 ### 5. Update Docs
 
+- `README.md` — update pattern count, add to architecture diagram, patterns table, project structure
 - `docs/plan.md` — directory structure, patterns table
 - `CLAUDE.md` — status section, step table
 - `.claude/agents/pattern-builder.md` — add new pattern to scope
