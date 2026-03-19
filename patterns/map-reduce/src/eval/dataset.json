@@ -1,0 +1,15 @@
+{
+  "name": "map-reduce-parallel-analysis",
+  "items": [
+    { "input": "Analyze the pros and cons of remote work for companies, employees, and society", "metadata": { "expectedSubtaskCount": 3, "difficulty": "easy" } },
+    { "input": "Compare React, Vue, and Angular for a new enterprise web application", "metadata": { "expectedSubtaskCount": 3, "difficulty": "medium" } },
+    { "input": "What are the environmental, economic, and social impacts of electric vehicles?", "metadata": { "expectedSubtaskCount": 3, "difficulty": "easy" } },
+    { "input": "Evaluate the benefits and risks of artificial intelligence in healthcare", "metadata": { "expectedSubtaskCount": 2, "difficulty": "medium" } },
+    { "input": "Analyze the factors affecting housing prices: economic, demographic, and policy", "metadata": { "expectedSubtaskCount": 3, "difficulty": "medium" } },
+    { "input": "Compare the education systems of Finland, Singapore, and the United States", "metadata": { "expectedSubtaskCount": 3, "difficulty": "hard" } },
+    { "input": "What are the key challenges facing renewable energy: technical, economic, and political?", "metadata": { "expectedSubtaskCount": 3, "difficulty": "medium" } },
+    { "input": "Analyze the impact of social media on mental health, democracy, and business", "metadata": { "expectedSubtaskCount": 3, "difficulty": "medium" } },
+    { "input": "Compare cloud computing strategies: AWS vs Azure vs GCP for a mid-size company", "metadata": { "expectedSubtaskCount": 3, "difficulty": "hard" } },
+    { "input": "What are the benefits and drawbacks of a four-day work week?", "metadata": { "expectedSubtaskCount": 2, "difficulty": "easy" } }
+  ]
+}
