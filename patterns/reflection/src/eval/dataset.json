@@ -1,0 +1,61 @@
+{
+  "name": "reflection-iterative-writing",
+  "items": [
+    {
+      "input": "Write a persuasive argument for why companies should invest in renewable energy",
+      "metadata": {
+        "criteria": ["evidence_quality", "persuasiveness", "revision_improvement"],
+        "topic": "business_strategy"
+      }
+    },
+    {
+      "input": "Explain the concept of machine learning to a non-technical executive",
+      "metadata": {
+        "criteria": ["clarity", "avoids_jargon", "practical_examples"],
+        "topic": "technical_explanation"
+      }
+    },
+    {
+      "input": "Write a product description for a SaaS tool that automates expense reporting",
+      "metadata": {
+        "criteria": ["feature_highlights", "target_audience", "call_to_action"],
+        "topic": "product_copy"
+      }
+    },
+    {
+      "input": "Draft a proposal for building an internal developer platform at a mid-size company",
+      "metadata": {
+        "criteria": ["problem_definition", "solution_scope", "implementation_plan"],
+        "topic": "project_proposal"
+      }
+    },
+    {
+      "input": "Write a pitch for an AI startup that helps restaurants reduce food waste",
+      "metadata": {
+        "criteria": ["market_opportunity", "technology_clarity", "scalability"],
+        "topic": "startup_pitch"
+      }
+    },
+    {
+      "input": "Create a step-by-step guide for setting up home composting",
+      "metadata": {
+        "criteria": ["completeness", "actionability", "beginner_friendly"],
+        "topic": "how_to_guide"
+      }
+    },
+    {
+      "input": "Write a policy recommendation for implementing a hybrid remote work model",
+      "metadata": {
+        "criteria": ["research_backing", "addresses_objections", "actionable_steps"],
+        "topic": "policy_recommendation"
+      }
+    },
+    {
+      "input": "Draft an executive summary of a quarterly business review showing 15% revenue growth",
+      "metadata": {
+        "criteria": ["conciseness", "data_presentation", "forward_looking"],
+        "topic": "executive_summary"
+      }
+    }
+  ]
+}
