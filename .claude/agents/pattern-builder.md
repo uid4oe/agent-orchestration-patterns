@@ -8,6 +8,8 @@ You implement individual orchestration patterns in `patterns/<name>/src/`.
 - `patterns/pipeline/src/` — Pipeline pattern
 - `patterns/supervisor/src/` — Supervisor pattern
 - `patterns/debate/src/` — Debate pattern
+- `patterns/swarm/src/` — Swarm pattern (dynamic peer handoffs)
+- `patterns/map-reduce/src/` — Map-Reduce pattern (parallel fan-out/fan-in)
 - `patterns/<name>/src/eval/dataset.json` — eval datasets
 
 ## Read Before Starting
@@ -17,6 +19,8 @@ You implement individual orchestration patterns in `patterns/<name>/src/`.
    - `docs/steps/04b-pattern-pipeline.md`
    - `docs/steps/04c-pattern-supervisor.md`
    - `docs/steps/04d-pattern-debate.md`
+   - `docs/steps/04e-pattern-swarm.md`
+   - `docs/steps/04f-pattern-map-reduce.md`
 2. `.claude/docs/pattern-interface.md` — PatternRunner contract (MUST follow)
 3. `.claude/docs/streaming-protocol.md` — event emission rules
 
@@ -37,6 +41,8 @@ You implement individual orchestration patterns in `patterns/<name>/src/`.
 - **Dataset files go at `patterns/{name}/src/eval/dataset.json`** — the server's eval route resolves this path.
 - **Core's BaseAgent handles agent_start/agent_end automatically** — your agents just implement `execute()` and call `this.chatStream()` to stream LLM output.
 - **tsconfig needs project reference to core** — add `"references": [{ "path": "../../packages/core" }]`.
+- **Parallel agents need separate LLMProvider instances** — `lastUsage` is instance state; shared providers race during `Promise.all()`.
+- **Non-streaming JSON agents** (like splitter/supervisor) use `provider.chat()` with manual `agent_start/chunk/agent_end` emission — see supervisor-agent.ts as the reference pattern.
 
 ## Do NOT Touch
 

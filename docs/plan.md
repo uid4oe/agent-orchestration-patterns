@@ -85,13 +85,29 @@ agent-orchestration-patterns/
 │   │       ├── workers/             # search.ts, analysis.ts, summary.ts
 │   │       └── eval/
 │   │           └── dataset.json
-│   └── debate/
+│   ├── debate/
+│   │   ├── README.md
+│   │   └── src/
+│   │       ├── index.ts
+│   │       ├── debate-arena.ts
+│   │       ├── debaters/            # bull.ts, bear.ts
+│   │       ├── judge.ts
+│   │       └── eval/
+│   │           └── dataset.json
+│   ├── swarm/
+│   │   ├── README.md
+│   │   └── src/
+│   │       ├── index.ts
+│   │       ├── swarm-runner.ts
+│   │       ├── agents/              # triage.ts, sales.ts, support.ts, billing.ts
+│   │       └── eval/
+│   │           └── dataset.json
+│   └── map-reduce/
 │       ├── README.md
 │       └── src/
 │           ├── index.ts
-│           ├── debate-arena.ts
-│           ├── debaters/            # bull.ts, bear.ts
-│           ├── judge.ts
+│           ├── map-reduce-runner.ts
+│           ├── agents/              # splitter.ts, mapper.ts, reducer.ts
 │           └── eval/
 │               └── dataset.json
 │
@@ -199,7 +215,7 @@ type TokenUsage = { inputTokens: number; outputTokens: number }
 - Tailwind CSS
 - `useStream` hook for SSE
 
-## 4 Patterns
+## 6 Patterns
 
 | Pattern | Demo Scenario | Eval Criteria |
 |---------|---------------|---------------|
@@ -207,6 +223,8 @@ type TokenUsage = { inputTokens: number; outputTokens: number }
 | **Pipeline** | Content creation chain | Per-stage quality, final coherence |
 | **Supervisor** | Research task | Completion rate, retry count, quality |
 | **Debate** | Investment analysis | Argument depth, judge reasoning |
+| **Swarm** | Dynamic agent handoffs | Handoff accuracy, multi-hop routing |
+| **Map-Reduce** | Multi-faceted analysis | Subtask decomposition, synthesis quality |
 
 ## Docker
 

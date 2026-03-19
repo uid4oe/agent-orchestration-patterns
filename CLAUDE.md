@@ -21,6 +21,8 @@ Steps 4a-4d can run **in parallel** once steps 1-2 are done.
 | 2. Server | `docs/steps/02-server.md` | `server-builder` |
 | 3. Frontend Shell | `docs/steps/03-frontend-shell.md` | `frontend-builder` |
 | **4a-4d. Patterns** | **`docs/steps/04a-*.md`** | **`pattern-builder`** |
+| **4e. Swarm** | `docs/steps/04e-pattern-swarm.md` | `pattern-builder` |
+| **4f. Map-Reduce** | `docs/steps/04f-pattern-map-reduce.md` | `pattern-builder` |
 | 5. Eval System | `docs/steps/05-eval-system.md` | `core-builder` + `server-builder` |
 | 6. Docker | `docs/steps/06-docker.md` | `docker-builder` |
 | 7. Documentation | `docs/steps/07-documentation.md` | `docs-builder` |
@@ -31,12 +33,24 @@ Step 1 ──→ Step 2 ──→ Step 3
                 ├──→ 4a: Router    ──┐
                 ├──→ 4b: Pipeline  ──┤ parallel
                 ├──→ 4c: Supervisor──┤
-                └──→ 4d: Debate    ──┘
+                ├──→ 4d: Debate    ──┤
+                ├──→ 4e: Swarm     ──┤
+                └──→ 4f: Map-Reduce──┘
                                      │
                 Step 5: Eval  ←──────┘
                 Step 6: Docker
                 Step 7: Docs
 ```
+
+## New Feature Workflow
+
+The global planning rule applies. Additionally for this project:
+
+- **Read `docs/plan.md`** and the relevant `docs/steps/` guide before planning
+- **New npm dependencies** require explicit plan approval — prefer what's already in the workspace
+- **Prefer incremental changes** over rewrites — extend existing components, don't replace them
+- **Use the right agent** for the scope (see Agent Team table below)
+- After plan approval: implement → self-check → code-reviewer → commit → feedback loop
 
 ## Code Review Process
 
@@ -83,11 +97,23 @@ Use the `code-reviewer` agent. It validates against:
 |-------|-------|
 | `core-builder` | `packages/core/` — LLM provider, BaseAgent, stream types, eval |
 | `server-builder` | `server/` — Express, SSE, routes |
-| `pattern-builder` | `patterns/*/` — all 4 orchestration patterns |
+| `pattern-planner` | Plans new patterns: step docs, agent design, integration |
+| `pattern-builder` | `patterns/*/` — all orchestration patterns |
 | `frontend-builder` | `frontend/` — React, components, hooks |
 | `docker-builder` | Dockerfiles, docker-compose, nginx |
 | `docs-builder` | READMEs, architecture docs |
 | `code-reviewer` | Reviews all code before commits |
+
+## Adding a New Pattern
+
+Use the `pattern-planner` agent (`.claude/agents/pattern-planner.md`). It handles the full lifecycle:
+
+1. Design pattern concept, agents, orchestrator, demo scenario
+2. Create step doc at `docs/steps/04{x}-pattern-{name}.md` (follow 04a-04d format)
+3. Implement via `pattern-builder` (leaf agents → orchestrator → tests → eval → README)
+4. Register in server (`PATTERN_PACKAGES`) + frontend (`PATTERN_ICONS`)
+5. Update `docs/plan.md`, `CLAUDE.md` status, `.claude/agents/pattern-builder.md` scope
+6. Run feedback loop: diary entry + INDEX update
 
 ## Workspace Boundaries
 
@@ -141,6 +167,8 @@ docker compose --profile langfuse up     # + Langfuse (:3002)
 - [x] Step 3: Frontend Shell (9 commits, 14 tests)
 - [x] Refactor: LLM layer → Vercel AI SDK (3 commits)
 - [x] Step 4a-4d: Patterns — router(18), pipeline(10), supervisor(19), debate(6) tests
+- [x] Step 4e: Swarm Pattern — dynamic handoffs, 4 agents, 23 tests
+- [x] Step 4f: Map-Reduce Pattern — parallel fan-out/fan-in, 3 agent types, 16 tests
 - [x] Step 5: Eval System (Langfuse integration, auto dataset resolution)
 - [x] Step 6: Docker (server + frontend + Langfuse profile)
 - [x] Step 7: Documentation (root README, architecture, 4 pattern READMEs)
