@@ -14,6 +14,7 @@
     "@agent-patterns/debate": "*",
     "@agent-patterns/swarm": "*",
     "@agent-patterns/map-reduce": "*",
+    "@agent-patterns/reflection": "*",
     "express": "^4.21.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7"

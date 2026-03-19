@@ -8,6 +8,7 @@ const PATTERN_ICONS: Record<string, string> = {
   debate: "\u2696",
   swarm: "\uD83D\uDC1D",
   "map-reduce": "\uD83D\uDD04",
+  reflection: "\uD83E\uDE9E",
 };
 
 interface PatternSelectorProps {
