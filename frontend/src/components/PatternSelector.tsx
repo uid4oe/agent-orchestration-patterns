@@ -6,6 +6,8 @@ const PATTERN_ICONS: Record<string, string> = {
   pipeline: "\u26D3",
   supervisor: "\uD83D\uDC41",
   debate: "\u2696",
+  swarm: "\uD83D\uDC1D",
+  "map-reduce": "\uD83D\uDD04",
 };
 
 interface PatternSelectorProps {

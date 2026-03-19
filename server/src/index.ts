@@ -24,6 +24,8 @@ const PATTERN_PACKAGES = [
   "@agent-patterns/pipeline",
   "@agent-patterns/supervisor",
   "@agent-patterns/debate",
+  "@agent-patterns/swarm",
+  "@agent-patterns/map-reduce",
 ] as const;
 
 async function loadPatterns(): Promise<Map<string, PatternEntry>> {
