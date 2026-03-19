@@ -1,0 +1,55 @@
+{
+  "name": "swarm-dynamic-handoffs",
+  "items": [
+    {
+      "input": "I was charged twice for my subscription",
+      "expectedOutput": "billing",
+      "metadata": { "expectedFirstHandoff": "billing", "difficulty": "easy" }
+    },
+    {
+      "input": "The app crashes when I try to export a PDF",
+      "expectedOutput": "support",
+      "metadata": { "expectedFirstHandoff": "support", "difficulty": "easy" }
+    },
+    {
+      "input": "What's the difference between Pro and Enterprise plans?",
+      "expectedOutput": "sales",
+      "metadata": { "expectedFirstHandoff": "sales", "difficulty": "easy" }
+    },
+    {
+      "input": "Hi, I need some help",
+      "expectedOutput": "triage",
+      "metadata": { "expectedFirstHandoff": "none", "difficulty": "easy" }
+    },
+    {
+      "input": "I'd like a refund for the last 3 months",
+      "expectedOutput": "billing",
+      "metadata": { "expectedFirstHandoff": "billing", "difficulty": "easy" }
+    },
+    {
+      "input": "How do I upgrade my team to the Business plan?",
+      "expectedOutput": "sales",
+      "metadata": { "expectedFirstHandoff": "sales", "difficulty": "medium" }
+    },
+    {
+      "input": "Getting 403 errors when accessing the API",
+      "expectedOutput": "support",
+      "metadata": { "expectedFirstHandoff": "support", "difficulty": "medium" }
+    },
+    {
+      "input": "I want to cancel my account and get a prorated refund",
+      "expectedOutput": "billing",
+      "metadata": { "expectedFirstHandoff": "billing", "difficulty": "medium" }
+    },
+    {
+      "input": "The premium features I'm paying for aren't showing up in my account",
+      "expectedOutput": "support",
+      "metadata": { "expectedFirstHandoff": "support", "difficulty": "hard" }
+    },
+    {
+      "input": "My invoice shows Enterprise pricing but I only signed up for Pro",
+      "expectedOutput": "billing",
+      "metadata": { "expectedFirstHandoff": "billing", "difficulty": "hard" }
+    }
+  ]
+}
