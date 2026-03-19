@@ -14,6 +14,7 @@ Evolution log for the agent orchestration patterns project. Each entry captures 
 | 2026-03-18 | Step 4a-4d: Patterns | pattern-builder x4 | Parallel worktrees work, git clean before merge, protected config needs wrappers |
 | 2026-03-18 | Steps 5-7: Eval+Docker+Docs | eval/docker/docs builders | All remaining steps complete, project finished |
 | 2026-03-19 | Step 4e-4f: Swarm+Map-Reduce | pattern-planner + pattern-builder x2 | Parallel providers for Promise.all, eval path must be src/eval/, pattern-planner agent created |
+| 2026-03-20 | Step 4g: Reflection | pattern-planner + pattern-builder | Always follow documented lifecycle, step docs are the contract, don't shortcut |
 
 ## How to Read
 
