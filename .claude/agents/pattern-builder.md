@@ -10,6 +10,7 @@ You implement individual orchestration patterns in `patterns/<name>/src/`.
 - `patterns/debate/src/` — Debate pattern
 - `patterns/swarm/src/` — Swarm pattern (dynamic peer handoffs)
 - `patterns/map-reduce/src/` — Map-Reduce pattern (parallel fan-out/fan-in)
+- `patterns/reflection/src/` — Reflection pattern (generate-critique-revise loop)
 - `patterns/<name>/src/eval/dataset.json` — eval datasets
 
 ## Read Before Starting
@@ -21,6 +22,7 @@ You implement individual orchestration patterns in `patterns/<name>/src/`.
    - `docs/steps/04d-pattern-debate.md`
    - `docs/steps/04e-pattern-swarm.md`
    - `docs/steps/04f-pattern-map-reduce.md`
+   - `docs/steps/04g-pattern-reflection.md`
 2. `.claude/docs/pattern-interface.md` — PatternRunner contract (MUST follow)
 3. `.claude/docs/streaming-protocol.md` — event emission rules
 

@@ -23,6 +23,7 @@ Steps 4a-4d can run **in parallel** once steps 1-2 are done.
 | **4a-4d. Patterns** | **`docs/steps/04a-*.md`** | **`pattern-builder`** |
 | **4e. Swarm** | `docs/steps/04e-pattern-swarm.md` | `pattern-builder` |
 | **4f. Map-Reduce** | `docs/steps/04f-pattern-map-reduce.md` | `pattern-builder` |
+| **4g. Reflection** | `docs/steps/04g-pattern-reflection.md` | `pattern-builder` |
 | 5. Eval System | `docs/steps/05-eval-system.md` | `core-builder` + `server-builder` |
 | 6. Docker | `docs/steps/06-docker.md` | `docker-builder` |
 | 7. Documentation | `docs/steps/07-documentation.md` | `docs-builder` |
@@ -35,7 +36,8 @@ Step 1 ──→ Step 2 ──→ Step 3
                 ├──→ 4c: Supervisor──┤
                 ├──→ 4d: Debate    ──┤
                 ├──→ 4e: Swarm     ──┤
-                └──→ 4f: Map-Reduce──┘
+                ├──→ 4f: Map-Reduce──┤
+                └──→ 4g: Reflection──┘
                                      │
                 Step 5: Eval  ←──────┘
                 Step 6: Docker
@@ -169,6 +171,7 @@ docker compose --profile langfuse up     # + Langfuse (:3002)
 - [x] Step 4a-4d: Patterns — router(18), pipeline(10), supervisor(19), debate(6) tests
 - [x] Step 4e: Swarm Pattern — dynamic handoffs, 4 agents, 23 tests
 - [x] Step 4f: Map-Reduce Pattern — parallel fan-out/fan-in, 3 agent types, 16 tests
+- [x] Step 4g: Reflection Pattern — generate-critique-revise loop, 2 agents, 18 tests
 - [x] Step 5: Eval System (Langfuse integration, auto dataset resolution)
 - [x] Step 6: Docker (server + frontend + Langfuse profile)
 - [x] Step 7: Documentation (root README, architecture, 4 pattern READMEs)
