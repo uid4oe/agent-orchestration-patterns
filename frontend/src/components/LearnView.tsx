@@ -1,0 +1,250 @@
+import { PATTERN_CONTENT } from "../data/pattern-content.ts";
+import type { PatternContent } from "../data/pattern-content.ts";
+import { CollapsibleSection } from "./CollapsibleSection.tsx";
+import { SuggestedPrompts } from "./SuggestedPrompts.tsx";
+
+/* ── Icons for collapsible sections ──────────────────────────── */
+
+const iconTarget = (
+  <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+  </svg>
+);
+
+const iconArch = (
+  <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25a2.25 2.25 0 0 1-2.25-2.25v-2.25Z" />
+  </svg>
+);
+
+const iconSteps = (
+  <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z" />
+  </svg>
+);
+
+const iconStream = (
+  <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5" />
+  </svg>
+);
+
+const iconAgents = (
+  <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+  </svg>
+);
+
+const iconTradeoffs = (
+  <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0 0 12 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 0 1-2.031.352 5.988 5.988 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L18.75 4.971Zm-16.5.52c.99-.203 1.99-.377 3-.52m0 0 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.989 5.989 0 0 1-2.031.352 5.989 5.989 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L5.25 4.971Z" />
+  </svg>
+);
+
+/* ── Overview grid (no pattern selected) ─────────────────────── */
+
+function PatternOverviewGrid() {
+  const patterns = Object.values(PATTERN_CONTENT);
+
+  return (
+    <div className="h-full overflow-y-auto p-5 custom-scrollbar">
+      <div className="mb-5">
+        <h3 className="text-sm font-semibold text-[var(--color-text-primary)] mb-1">
+          Orchestration Patterns
+        </h3>
+        <p className="text-xs text-[var(--color-text-tertiary)] leading-relaxed">
+          Explore 7 multi-agent orchestration patterns. Select a pattern below to start, then use the Learn tab to study how it works.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 gap-2.5">
+        {patterns.map((p) => (
+          <div
+            key={p.name}
+            className="flex items-start gap-3 rounded-xl border border-[var(--color-border-light)] glass-card px-3.5 py-3 transition-colors"
+          >
+            <span className="text-lg shrink-0 mt-0.5">{p.icon}</span>
+            <div className="min-w-0">
+              <span className="text-[13px] font-semibold text-[var(--color-text-primary)] capitalize">
+                {p.name}
+              </span>
+              <p className="text-[11px] text-[var(--color-text-tertiary)] leading-relaxed mt-0.5">
+                {p.tagline}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ── Pattern content (specific pattern selected) ─────────────── */
+
+interface PatternContentViewProps {
+  pattern: PatternContent;
+  onTryPrompt: (prompt: string) => void;
+}
+
+function PatternContentView({ pattern, onTryPrompt }: PatternContentViewProps) {
+  return (
+    <div className="h-full overflow-y-auto p-5 custom-scrollbar">
+      {/* Hero */}
+      <div className="mb-5 animate-fade-in">
+        <div className="flex items-center gap-2.5 mb-2">
+          <span className="text-2xl">{pattern.icon}</span>
+          <div>
+            <h3 className="text-base font-semibold text-[var(--color-text-primary)] capitalize">
+              {pattern.name}
+            </h3>
+            <p className="text-xs text-[var(--color-text-tertiary)]">
+              {pattern.tagline}
+            </p>
+          </div>
+        </div>
+        <p className="text-[13px] text-[var(--color-text-secondary)] leading-relaxed">
+          {pattern.description}
+        </p>
+      </div>
+
+      {/* Collapsible sections */}
+      <div className="space-y-2.5">
+        {/* When to Use */}
+        <CollapsibleSection title="When to Use" icon={iconTarget} defaultOpen>
+          <ul className="space-y-1.5">
+            {pattern.whenToUse.map((item) => (
+              <li key={item} className="flex items-start gap-2 text-[12px] text-[var(--color-text-secondary)] leading-relaxed">
+                <span className="text-[var(--color-accent)] mt-1 shrink-0">&#x2022;</span>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </CollapsibleSection>
+
+        {/* Architecture */}
+        <CollapsibleSection title="Architecture" icon={iconArch} defaultOpen>
+          <pre className="text-[11px] leading-relaxed bg-[var(--color-surface-tertiary)] rounded-lg p-3 overflow-x-auto font-mono text-[var(--color-text-secondary)]">
+            <code>{pattern.architectureMermaid}</code>
+          </pre>
+        </CollapsibleSection>
+
+        {/* How It Works */}
+        <CollapsibleSection title="How It Works" icon={iconSteps} defaultOpen>
+          <ol className="space-y-2">
+            {pattern.howItWorks.map((step, i) => (
+              <li key={step} className="flex items-start gap-2.5 text-[12px] text-[var(--color-text-secondary)] leading-relaxed">
+                <span className="flex items-center justify-center w-5 h-5 rounded-full bg-[var(--color-accent-light)] shrink-0 mt-0.5">
+                  <span className="text-[10px] font-bold text-[var(--color-accent)] tabular-nums">
+                    {i + 1}
+                  </span>
+                </span>
+                {step}
+              </li>
+            ))}
+          </ol>
+        </CollapsibleSection>
+
+        {/* Event Flow */}
+        <CollapsibleSection title="Event Flow" icon={iconStream}>
+          <pre className="text-[10px] leading-relaxed bg-[var(--color-surface-tertiary)] rounded-lg p-3 overflow-x-auto font-mono text-[var(--color-text-secondary)]">
+            <code>{pattern.eventFlow}</code>
+          </pre>
+        </CollapsibleSection>
+
+        {/* Agent Roles */}
+        <CollapsibleSection title="Agent Roles" icon={iconAgents}>
+          <div className="overflow-x-auto">
+            <table className="w-full text-[11px]">
+              <thead>
+                <tr className="border-b border-[var(--color-border-light)]">
+                  <th className="text-left py-1.5 pr-3 font-semibold text-[var(--color-text-tertiary)] uppercase tracking-wider">
+                    Agent
+                  </th>
+                  <th className="text-left py-1.5 pr-3 font-semibold text-[var(--color-text-tertiary)] uppercase tracking-wider">
+                    Role
+                  </th>
+                  <th className="text-left py-1.5 font-semibold text-[var(--color-text-tertiary)] uppercase tracking-wider">
+                    Description
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {pattern.agents.map((agent) => (
+                  <tr key={agent.name} className="border-b border-[var(--color-border-light)] last:border-0">
+                    <td className="py-1.5 pr-3 font-mono text-[var(--color-accent)]">
+                      {agent.name}
+                    </td>
+                    <td className="py-1.5 pr-3 text-[var(--color-text-secondary)]">
+                      {agent.role}
+                    </td>
+                    <td className="py-1.5 text-[var(--color-text-tertiary)]">
+                      {agent.description}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </CollapsibleSection>
+
+        {/* Tradeoffs */}
+        <CollapsibleSection title="Tradeoffs" icon={iconTradeoffs}>
+          <div className="space-y-3">
+            <div>
+              <h5 className="text-[10px] font-semibold uppercase tracking-wider text-emerald-600 mb-1.5">
+                Pros
+              </h5>
+              <ul className="space-y-1">
+                {pattern.tradeoffs.pros.map((pro) => (
+                  <li key={pro} className="flex items-start gap-2 text-[11px] text-[var(--color-text-secondary)] leading-relaxed">
+                    <span className="text-emerald-500 shrink-0 mt-0.5">&#x2713;</span>
+                    {pro}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h5 className="text-[10px] font-semibold uppercase tracking-wider text-amber-600 mb-1.5">
+                Cons
+              </h5>
+              <ul className="space-y-1">
+                {pattern.tradeoffs.cons.map((con) => (
+                  <li key={con} className="flex items-start gap-2 text-[11px] text-[var(--color-text-secondary)] leading-relaxed">
+                    <span className="text-amber-500 shrink-0 mt-0.5">&#x26A0;</span>
+                    {con}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </CollapsibleSection>
+
+        {/* Suggested Prompts */}
+        <div className="pt-2">
+          <SuggestedPrompts prompts={pattern.suggestedPrompts} onTryPrompt={onTryPrompt} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── LearnView (main export) ──────────────────────────────── */
+
+interface LearnViewProps {
+  selectedPattern: string | null;
+  onTryPrompt: (prompt: string) => void;
+}
+
+export function LearnView({ selectedPattern, onTryPrompt }: LearnViewProps) {
+  if (!selectedPattern) {
+    return <PatternOverviewGrid />;
+  }
+
+  const content = PATTERN_CONTENT[selectedPattern];
+  if (!content) {
+    return <PatternOverviewGrid />;
+  }
+
+  return <PatternContentView pattern={content} onTryPrompt={onTryPrompt} />;
+}

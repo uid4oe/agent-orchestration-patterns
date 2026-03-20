@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Chat } from "./components/Chat.tsx";
 import { PatternSelector } from "./components/PatternSelector.tsx";
-import { TraceView } from "./components/TraceView.tsx";
+import { RightPanel } from "./components/RightPanel.tsx";
 import { useStream } from "./hooks/useStream.ts";
 
 export function App() {
@@ -32,6 +32,11 @@ export function App() {
     setInput("");
     send(selectedPattern, trimmed);
   }, [input, selectedPattern, isStreaming, send]);
+
+  const handleTryPrompt = useCallback((prompt: string) => {
+    setInput(prompt);
+    inputRef.current?.focus();
+  }, []);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -78,11 +83,13 @@ export function App() {
           />
         </div>
         <div className="flex-[2] min-h-0 glass rounded-2xl overflow-hidden">
-          <TraceView
+          <RightPanel
+            selectedPattern={selectedPattern}
             traceNodes={traceNodes}
             traceEdges={traceEdges}
             totalUsage={totalUsage}
             isStreaming={isStreaming}
+            onTryPrompt={handleTryPrompt}
           />
         </div>
       </main>
