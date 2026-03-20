@@ -248,7 +248,7 @@ export function useStream(activePattern: string | null): UseStreamReturn {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ input }),
-          signal: AbortSignal.any([controller.signal, AbortSignal.timeout(30_000)]),
+          signal: controller.signal,
         });
 
         if (!response.ok) {
