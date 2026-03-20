@@ -1,6 +1,4 @@
-import { BaseAgent } from "@agent-patterns/core";
-import type { StreamEmitter } from "@agent-patterns/core";
-import type { AgentResult } from "@agent-patterns/core";
+import { SimpleAgent } from "@agent-patterns/core";
 
 const SYSTEM_PROMPT = `You are a rigorous content critic and quality evaluator. Your role is to evaluate written content against high standards and provide actionable feedback.
 
@@ -18,19 +16,8 @@ or
 
 Use "pass" only when the content meets all criteria at a high standard. Use "revise" when there are concrete improvements to be made.`;
 
-export class Critic extends BaseAgent {
-  protected async execute(
-    input: string,
-    emitter: StreamEmitter,
-  ): Promise<AgentResult> {
-    const { output, usage } = await this.chatStream(
-      [
-        { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: input },
-      ],
-      emitter,
-    );
-
-    return { output, usage, durationMs: 0 };
+export class Critic extends SimpleAgent {
+  protected getSystemPrompt(): string {
+    return SYSTEM_PROMPT;
   }
 }
