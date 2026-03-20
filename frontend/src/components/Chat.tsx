@@ -45,6 +45,7 @@ export function Chat({
   return (
     <div
       ref={scrollRef}
+      aria-live="polite"
       className="h-full overflow-y-auto py-4 custom-scrollbar"
     >
       {messages.length === 0 && (

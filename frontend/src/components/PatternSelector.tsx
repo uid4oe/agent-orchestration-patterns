@@ -69,7 +69,7 @@ export function PatternSelector({
 
   if (loading) {
     return (
-      <div className="flex items-center gap-2 text-xs text-[var(--color-text-tertiary)]">
+      <div role="status" aria-label="Loading patterns" className="flex items-center gap-2 text-xs text-[var(--color-text-tertiary)]">
         <span className="h-3 w-3 rounded-full border-2 border-[var(--color-border)] border-t-[var(--color-accent)] animate-spin-slow" />
         Loading...
       </div>
@@ -93,7 +93,7 @@ export function PatternSelector({
   }
 
   return (
-    <div className="flex items-center gap-1 shrink-0">
+    <div role="group" aria-label="Pattern selector" className="flex items-center gap-1 shrink-0">
       {patterns.map((pattern) => {
         const isActive = pattern.name === selected;
         return (
@@ -101,6 +101,7 @@ export function PatternSelector({
             key={pattern.name}
             type="button"
             onClick={() => handleSelect(pattern.name)}
+            aria-pressed={isActive}
             disabled={isStreaming && !isActive}
             className={`shrink-0 rounded-lg px-2.5 py-1 text-[12px] font-medium transition-all duration-150 flex items-center gap-1.5 ${
               isActive
