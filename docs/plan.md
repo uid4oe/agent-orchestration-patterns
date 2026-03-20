@@ -282,6 +282,7 @@ docker compose --profile langfuse up
 13. Dockerfiles + docker-compose.yml (including Langfuse + Postgres)
 14. READMEs with Mermaid diagrams
 15. Root README with quick start + screenshots
+16. Educational content — Learn tab with per-pattern docs, architecture, best practices, Try-it prompts
 
 ## Verification
 
