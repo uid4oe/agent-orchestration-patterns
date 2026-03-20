@@ -109,8 +109,8 @@ function isValidSubtasks(
 }
 
 function prop(obj: unknown, key: string): unknown {
-  if (typeof obj === "object" && obj !== null && key in obj) {
-    return (obj as Record<string, unknown>)[key];
+  if (typeof obj !== "object" || obj === null || !(key in obj)) {
+    return undefined;
   }
-  return undefined;
+  return Reflect.get(obj, key);
 }

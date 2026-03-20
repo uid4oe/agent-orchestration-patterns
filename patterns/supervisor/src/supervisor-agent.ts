@@ -211,10 +211,11 @@ function extractJson(content: string): string {
 }
 
 function prop(obj: unknown, key: string): unknown {
-  if (typeof obj === "object" && obj !== null && key in obj) {
-    return (obj as Record<string, unknown>)[key];
+  if (typeof obj !== "object" || obj === null || !(key in obj)) {
+    return undefined;
   }
-  return undefined;
+  // Safe: validated that obj is a non-null object with the key present
+  return Reflect.get(obj, key);
 }
 
 function isValidPlan(value: unknown): value is Plan {
