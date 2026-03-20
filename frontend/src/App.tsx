@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { AgentFlowSummary } from "./components/AgentFlowSummary.tsx";
 import { Chat } from "./components/Chat.tsx";
 import { PatternSelector } from "./components/PatternSelector.tsx";
 import { RightPanel } from "./components/RightPanel.tsx";
@@ -14,7 +15,6 @@ export function App() {
     traceEdges,
     isStreaming,
     error,
-    totalUsage,
     send,
   } = useStream(selectedPattern);
 
@@ -77,20 +77,26 @@ export function App() {
         <div className="flex-[3] min-h-0 glass rounded-2xl overflow-hidden">
           <RightPanel
             selectedPattern={selectedPattern}
-            traceNodes={traceNodes}
-            traceEdges={traceEdges}
-            totalUsage={totalUsage}
-            isStreaming={isStreaming}
             onTryPrompt={handleTryPrompt}
           />
         </div>
-        <div className="flex-[2] min-h-0 glass-strong rounded-2xl overflow-hidden">
-          <Chat
-            messages={messages}
-            isStreaming={isStreaming}
-            error={error}
-            totalUsage={totalUsage}
-          />
+        <div className="flex-[2] min-h-0 flex flex-col gap-2">
+          <div className="flex-1 min-h-0 glass-strong rounded-2xl overflow-hidden">
+            <Chat
+              messages={messages}
+              isStreaming={isStreaming}
+              error={error}
+            />
+          </div>
+          {traceNodes.length > 0 && (
+            <div className="shrink-0 glass-strong rounded-2xl overflow-hidden">
+              <AgentFlowSummary
+                traceNodes={traceNodes}
+                traceEdges={traceEdges}
+                isStreaming={isStreaming}
+              />
+            </div>
+          )}
         </div>
       </main>
 

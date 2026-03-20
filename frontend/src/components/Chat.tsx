@@ -3,7 +3,6 @@ import type {
   AgentMessage,
   ChatMessage,
   HandoffMessage,
-  TokenUsage,
   UserMessage,
 } from "../types.ts";
 import { MessageBubble } from "./MessageBubble.tsx";
@@ -24,14 +23,12 @@ interface ChatProps {
   messages: ChatMessage[];
   isStreaming: boolean;
   error: string | null;
-  totalUsage: TokenUsage | null;
 }
 
 export function Chat({
   messages,
   isStreaming,
   error,
-  totalUsage,
 }: ChatProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -127,11 +124,6 @@ export function Chat({
         </div>
       )}
 
-      {!isStreaming && totalUsage && (
-        <div className="px-5 py-1 text-[11px] text-[var(--color-text-tertiary)] text-right animate-fade-in">
-          Total: {totalUsage.inputTokens + totalUsage.outputTokens} tokens
-        </div>
-      )}
     </div>
   );
 }
