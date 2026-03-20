@@ -1,7 +1,27 @@
 node_modules/
 dist/
-.env
 *.tsbuildinfo
 .vite/
 
+# env
+.env
+.env.*
+
+# demo recordings
 demo/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+*.swp
+*.swo
+
+# logs
+*.log
+npm-debug.log*
+
+# coverage
+coverage/

@@ -2,6 +2,8 @@
 
 Educational project demonstrating 7 multi-agent orchestration patterns with real-time streaming, inline trace visualization, and LLM-as-judge evals.
 
+Run it locally for the fully interactive experience, or check out the **live demo:** https://agent-orch.uid4oe.dev/
+
 ## Patterns
 
 | Pattern | Description | When to Use |
@@ -14,6 +16,10 @@ Educational project demonstrating 7 multi-agent orchestration patterns with real
 | **[Map-Reduce](patterns/map-reduce/)** | Parallel fan-out to mappers, then merged reduction | Multi-faceted analysis, document processing, parallel research |
 | **[Reflection](patterns/reflection/)** | Generate-critique-revise loop until quality threshold met | Writing refinement, code review, iterative improvement |
 
+![Demo 1](https://github.com/user-attachments/assets/4f2997e9-8637-42c0-a571-3ef166d2b882)
+![Demo 2](https://github.com/user-attachments/assets/17c07a25-b514-45af-8d99-760da8d0177b)
+![Demo 3](https://github.com/user-attachments/assets/17a4b497-4420-472b-afef-46f4d85020e5)
+
 ## Quick Start
 
 ```bash
@@ -21,7 +27,9 @@ git clone https://github.com/your-org/agent-orchestration-patterns.git
 cd agent-orchestration-patterns
 
 cp .env.example .env
-# Edit .env — set your LLM_API_KEY and LLM_PROVIDER/LLM_MODEL
+# Edit .env — set your LLM_PROVIDER, LLM_MODEL, and API key
+# Free option: get a Gemini API key at https://aistudio.google.com/apikey
+# then set LLM_PROVIDER=google and LLM_MODEL=gemini-2.0-flash
 
 npm install
 npm run dev
