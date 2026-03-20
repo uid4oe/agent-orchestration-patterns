@@ -248,7 +248,7 @@ export function useStream(activePattern: string | null): UseStreamReturn {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ input }),
-          signal: controller.signal,
+          signal: AbortSignal.any([controller.signal, AbortSignal.timeout(30_000)]),
         });
 
         if (!response.ok) {
@@ -303,7 +303,9 @@ export function useStream(activePattern: string | null): UseStreamReturn {
           return;
         }
         const message =
-          err instanceof Error ? err.message : "Unknown error occurred";
+          err instanceof DOMException && err.name === "TimeoutError"
+            ? "Request timed out — the server took too long to respond"
+            : err instanceof Error ? err.message : "Unknown error occurred";
         setState((prev) => ({
           ...prev,
           isStreaming: false,
