@@ -51,3 +51,19 @@ jobs:
             ghcr.io/uid4oe/agent-orchestration-patterns-frontend:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Prune old server images
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: agent-orchestration-patterns-server
+          package-type: container
+          min-versions-to-keep: 3
+          delete-only-untagged-versions: false
+
+      - name: Prune old frontend images
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: agent-orchestration-patterns-frontend
+          package-type: container
+          min-versions-to-keep: 3
+          delete-only-untagged-versions: false
