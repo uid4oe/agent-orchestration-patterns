@@ -1,6 +1,7 @@
 import { PATTERN_CONTENT } from "../data/pattern-content.ts";
 import type { PatternContent } from "../data/pattern-content.ts";
 import { CollapsibleSection } from "./CollapsibleSection.tsx";
+import { MermaidDiagram } from "./MermaidDiagram.tsx";
 import { SuggestedPrompts } from "./SuggestedPrompts.tsx";
 
 /* ── Icons for collapsible sections ──────────────────────────── */
@@ -124,9 +125,7 @@ function PatternContentView({ pattern, onTryPrompt }: PatternContentViewProps) {
 
         {/* Architecture */}
         <CollapsibleSection title="Architecture" icon={iconArch} defaultOpen>
-          <pre className="text-[11px] leading-relaxed bg-[var(--color-surface-tertiary)] rounded-lg p-3 overflow-x-auto font-mono text-[var(--color-text-secondary)]">
-            <code>{pattern.architectureMermaid}</code>
-          </pre>
+          <MermaidDiagram source={pattern.architectureMermaid} />
         </CollapsibleSection>
 
         {/* How It Works */}
