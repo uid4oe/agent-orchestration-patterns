@@ -1,5 +1,4 @@
-import { BaseAgent } from "@agent-patterns/core";
-import type { AgentResult, StreamEmitter } from "@agent-patterns/core";
+import { SimpleAgent } from "@agent-patterns/core";
 
 const SYSTEM_PROMPT = `You are a research summarizer and report writer. Your job is to produce clear, comprehensive, and well-structured reports from research findings and analysis.
 
@@ -12,19 +11,8 @@ When given research content to summarize:
 
 Focus on clarity, completeness, and producing a report that is immediately useful to the reader.`;
 
-export class SummaryWorker extends BaseAgent {
-  protected async execute(
-    input: string,
-    emitter: StreamEmitter,
-  ): Promise<AgentResult> {
-    const { output, usage } = await this.chatStream(
-      [
-        { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: input },
-      ],
-      emitter,
-    );
-
-    return { output, usage, durationMs: 0 };
+export class SummaryWorker extends SimpleAgent {
+  protected getSystemPrompt(): string {
+    return SYSTEM_PROMPT;
   }
 }

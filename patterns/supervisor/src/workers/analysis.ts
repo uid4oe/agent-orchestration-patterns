@@ -1,5 +1,4 @@
-import { BaseAgent } from "@agent-patterns/core";
-import type { AgentResult, StreamEmitter } from "@agent-patterns/core";
+import { SimpleAgent } from "@agent-patterns/core";
 
 const SYSTEM_PROMPT = `You are an analytical research specialist. Your job is to analyze information, identify patterns, compare perspectives, and draw insights.
 
@@ -12,19 +11,8 @@ When given information to analyze:
 
 Focus on depth of analysis, critical thinking, and connecting disparate pieces of information into a coherent narrative.`;
 
-export class AnalysisWorker extends BaseAgent {
-  protected async execute(
-    input: string,
-    emitter: StreamEmitter,
-  ): Promise<AgentResult> {
-    const { output, usage } = await this.chatStream(
-      [
-        { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: input },
-      ],
-      emitter,
-    );
-
-    return { output, usage, durationMs: 0 };
+export class AnalysisWorker extends SimpleAgent {
+  protected getSystemPrompt(): string {
+    return SYSTEM_PROMPT;
   }
 }
