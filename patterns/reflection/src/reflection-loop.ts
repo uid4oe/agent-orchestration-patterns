@@ -1,5 +1,5 @@
-import type { BaseAgent } from "@agent-patterns/core";
-import type { StreamEmitter, TokenUsage } from "@agent-patterns/core";
+import { addUsage } from "@agent-patterns/core";
+import type { BaseAgent, StreamEmitter, TokenUsage } from "@agent-patterns/core";
 
 export interface CriticVerdict {
   verdict: "pass" | "revise";
@@ -57,16 +57,11 @@ export function parseCriticVerdict(output: string): CriticVerdict {
 
 function isValidVerdict(value: unknown): value is CriticVerdict {
   if (typeof value !== "object" || value === null) return false;
-  const obj = value as Record<string, unknown>;
+  if (!("verdict" in value) || !("feedback" in value)) return false;
   return (
-    (obj["verdict"] === "pass" || obj["verdict"] === "revise") &&
-    typeof obj["feedback"] === "string"
+    (value.verdict === "pass" || value.verdict === "revise") &&
+    typeof value.feedback === "string"
   );
-}
-
-function addUsage(total: TokenUsage, delta: TokenUsage): void {
-  total.inputTokens += delta.inputTokens;
-  total.outputTokens += delta.outputTokens;
 }
 
 export class ReflectionLoop {

@@ -1,7 +1,7 @@
-import { BaseAgent, createProvider } from "@agent-patterns/core";
+import { BaseAgent, createProvider, addUsage } from "@agent-patterns/core";
 import type {
   PatternRunner,
-  ProviderName,
+  ProviderConfig,
   StreamEmitter,
   TokenUsage,
 } from "@agent-patterns/core";
@@ -14,26 +14,8 @@ import { GeneralSpecialist } from "./specialists/general.js";
 export const name = "router";
 export const description = "Intent-based routing to specialist agents";
 
-function addUsage(total: TokenUsage, delta: TokenUsage): void {
-  total.inputTokens += delta.inputTokens;
-  total.outputTokens += delta.outputTokens;
-}
-
-function isProviderName(value: string): value is ProviderName {
-  return value === "anthropic" || value === "openai" || value === "google";
-}
-
-function resolveProvider(envValue: string | undefined): ProviderName {
-  if (envValue !== undefined && isProviderName(envValue)) {
-    return envValue;
-  }
-  return "openai";
-}
-
-export function createRunner(): PatternRunner {
-  const providerName = resolveProvider(process.env["LLM_PROVIDER"]);
-  const modelName = process.env["LLM_MODEL"] ?? "gpt-4o-mini";
-  const provider = createProvider(providerName, modelName);
+export function createRunner(config: ProviderConfig): PatternRunner {
+  const provider = createProvider(config.providerName, config.modelName);
 
   const router = new RouterAgent({
     name: "router",
@@ -69,14 +51,12 @@ export function createRunner(): PatternRunner {
       let output = "";
 
       try {
-        // Step 1: Route — classify the user's intent
         const routerResult = await router.run(input, emitter);
         addUsage(totalUsage, routerResult.usage);
 
         const intent = parseIntent(routerResult.output);
         const specialist = specialists[intent];
 
-        // Step 2: Handoff — emit transition event
         emitter.emit({
           type: "handoff",
           from: "router",
@@ -84,7 +64,6 @@ export function createRunner(): PatternRunner {
           reason: `${intent.toLowerCase()} intent detected`,
         });
 
-        // Step 3: Specialist — run the matched specialist
         const specialistResult = await specialist.agent.run(input, emitter);
         addUsage(totalUsage, specialistResult.usage);
         output = specialistResult.output;

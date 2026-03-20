@@ -1,25 +1,27 @@
-import type { BaseAgent } from "@agent-patterns/core";
-import type { StreamEmitter, TokenUsage } from "@agent-patterns/core";
+import { addUsage } from "@agent-patterns/core";
+import type { BaseAgent, StreamEmitter, TokenUsage } from "@agent-patterns/core";
 
 export type SwarmAgentName = "triage" | "sales" | "support" | "billing";
 
 const MAX_HANDOFFS = 5;
+
+const SWARM_AGENT_NAMES = new Set<string>(["triage", "sales", "support", "billing"]);
+
+function isSwarmAgentName(value: string): value is SwarmAgentName {
+  return SWARM_AGENT_NAMES.has(value);
+}
 
 export function parseHandoff(output: string): SwarmAgentName | null {
   const match = /\[HANDOFF:(triage|sales|support|billing)\]/i.exec(output);
   if (!match?.[1]) {
     return null;
   }
-  return match[1].toLowerCase() as SwarmAgentName;
+  const name = match[1].toLowerCase();
+  return isSwarmAgentName(name) ? name : null;
 }
 
 export function stripHandoff(output: string): string {
   return output.replace(/\[HANDOFF:\w+\]/gi, "").trim();
-}
-
-function addUsage(total: TokenUsage, delta: TokenUsage): void {
-  total.inputTokens += delta.inputTokens;
-  total.outputTokens += delta.outputTokens;
 }
 
 export interface SwarmRunnerConfig {

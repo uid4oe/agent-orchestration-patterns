@@ -1,3 +1,4 @@
+import { addUsage } from "@agent-patterns/core";
 import type { BaseAgent, TokenUsage, StreamEmitter } from "@agent-patterns/core";
 
 export interface PipelineStage {
@@ -26,8 +27,7 @@ export class Pipeline {
       const result = await stage.agent.run(currentInput, emitter);
 
       currentInput = result.output;
-      totalUsage.inputTokens += result.usage.inputTokens;
-      totalUsage.outputTokens += result.usage.outputTokens;
+      addUsage(totalUsage, result.usage);
 
       if (i < this.stages.length - 1) {
         const nextStage = this.stages[i + 1]!;

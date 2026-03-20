@@ -1,9 +1,9 @@
-import { createProvider } from "@agent-patterns/core";
+import { createProvider, addUsage } from "@agent-patterns/core";
 import type {
   PatternRunner,
+  ProviderConfig,
   StreamEmitter,
   TokenUsage,
-  ProviderName,
 } from "@agent-patterns/core";
 import { Generator } from "./agents/generator.js";
 import { Critic } from "./agents/critic.js";
@@ -12,11 +12,8 @@ import { ReflectionLoop } from "./reflection-loop.js";
 export const name = "reflection";
 export const description = "Iterative generate-critique-revise loop";
 
-export function createRunner(): PatternRunner {
-  const provider = createProvider(
-    (process.env["LLM_PROVIDER"] ?? "openai") as ProviderName,
-    process.env["LLM_MODEL"] ?? "gpt-4o-mini",
-  );
+export function createRunner(config: ProviderConfig): PatternRunner {
+  const provider = createProvider(config.providerName, config.modelName);
 
   const generator = new Generator({
     name: "generator",
@@ -45,8 +42,7 @@ export function createRunner(): PatternRunner {
       try {
         const result = await loop.run(input, emitter);
         output = result.output;
-        totalUsage.inputTokens = result.totalUsage.inputTokens;
-        totalUsage.outputTokens = result.totalUsage.outputTokens;
+        addUsage(totalUsage, result.totalUsage);
       } catch (err) {
         emitter.emit({
           type: "error",

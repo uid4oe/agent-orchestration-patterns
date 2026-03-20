@@ -1,5 +1,5 @@
-import type { BaseAgent } from "@agent-patterns/core";
-import type { StreamEmitter, TokenUsage } from "@agent-patterns/core";
+import { addUsage } from "@agent-patterns/core";
+import type { BaseAgent, StreamEmitter, TokenUsage } from "@agent-patterns/core";
 
 export interface DebateResult {
   output: string;
@@ -23,8 +23,7 @@ export class DebateArena {
       const bullInput = `Thesis: ${thesis}\n\nTranscript so far:\n${transcript}\n\nPresent your argument FOR.`;
       const bullResult = await this.bull.run(bullInput, emitter);
       transcript += `\n\n## Bull (Round ${round}):\n${bullResult.output}`;
-      totalUsage.inputTokens += bullResult.usage.inputTokens;
-      totalUsage.outputTokens += bullResult.usage.outputTokens;
+      addUsage(totalUsage, bullResult.usage);
 
       emitter.emit({
         type: "handoff",
@@ -37,8 +36,7 @@ export class DebateArena {
       const bearInput = `Thesis: ${thesis}\n\nTranscript so far:\n${transcript}\n\nPresent your argument AGAINST.`;
       const bearResult = await this.bear.run(bearInput, emitter);
       transcript += `\n\n## Bear (Round ${round}):\n${bearResult.output}`;
-      totalUsage.inputTokens += bearResult.usage.inputTokens;
-      totalUsage.outputTokens += bearResult.usage.outputTokens;
+      addUsage(totalUsage, bearResult.usage);
 
       if (round < this.rounds) {
         emitter.emit({
@@ -60,8 +58,7 @@ export class DebateArena {
     // Judge evaluates
     const judgeInput = `Thesis: ${thesis}\n\nFull debate transcript:\n${transcript}\n\nEvaluate and declare a winner.`;
     const judgeResult = await this.judge.run(judgeInput, emitter);
-    totalUsage.inputTokens += judgeResult.usage.inputTokens;
-    totalUsage.outputTokens += judgeResult.usage.outputTokens;
+    addUsage(totalUsage, judgeResult.usage);
 
     return { output: judgeResult.output, totalUsage };
   }

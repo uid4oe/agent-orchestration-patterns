@@ -1,9 +1,9 @@
-import { createProvider, BaseAgent } from "@agent-patterns/core";
+import { createProvider, BaseAgent, addUsage } from "@agent-patterns/core";
 import type {
   PatternRunner,
+  ProviderConfig,
   StreamEmitter,
   TokenUsage,
-  ProviderName,
 } from "@agent-patterns/core";
 import { SupervisorAgent } from "./supervisor-agent.js";
 import type { WorkerName } from "./supervisor-agent.js";
@@ -16,10 +16,8 @@ export const description = "Supervised research with quality review and retry";
 
 const MAX_ITERATIONS = 3;
 
-export function createRunner(): PatternRunner {
-  const providerName = toProviderName(process.env["LLM_PROVIDER"] ?? "openai");
-  const modelName = process.env["LLM_MODEL"] ?? "gpt-4o-mini";
-  const provider = createProvider(providerName, modelName);
+export function createRunner(config: ProviderConfig): PatternRunner {
+  const provider = createProvider(config.providerName, config.modelName);
 
   const supervisor = new SupervisorAgent({
     name: "supervisor",
@@ -55,17 +53,14 @@ export function createRunner(): PatternRunner {
       let output = "";
 
       try {
-        // Step 1: Supervisor plans subtasks
         const { plan, usage: planUsage } = await supervisor.plan(input, emitter);
         addUsage(totalUsage, planUsage);
 
-        // Step 2: Execute each subtask with review loop
         let previousOutput = "";
         for (const subtask of plan.subtasks) {
           const worker = workers[subtask.worker];
           let instruction = subtask.instruction;
 
-          // Include previous worker output as context
           if (previousOutput) {
             instruction = `${instruction}\n\nContext from previous research:\n${previousOutput}`;
           }
@@ -76,7 +71,6 @@ export function createRunner(): PatternRunner {
           while (iteration < MAX_ITERATIONS) {
             iteration++;
 
-            // Emit handoff to worker
             const reason =
               iteration === 1
                 ? `Dispatching ${subtask.worker} task`
@@ -89,12 +83,10 @@ export function createRunner(): PatternRunner {
               reason,
             });
 
-            // Run worker
             const workerResult = await worker.run(instruction, emitter);
             addUsage(totalUsage, workerResult.usage);
             workerOutput = workerResult.output;
 
-            // Supervisor reviews output
             emitter.emit({
               type: "handoff",
               from: subtask.worker,
@@ -115,7 +107,6 @@ export function createRunner(): PatternRunner {
               break;
             }
 
-            // Retry with feedback
             instruction = `${subtask.instruction}\n\nPrevious attempt feedback: ${review.feedback}\n\nPlease improve your response based on this feedback.`;
             if (previousOutput) {
               instruction += `\n\nContext from previous research:\n${previousOutput}`;
@@ -138,19 +129,4 @@ export function createRunner(): PatternRunner {
       return { output, totalUsage };
     },
   };
-}
-
-function addUsage(total: TokenUsage, addition: TokenUsage): void {
-  total.inputTokens += addition.inputTokens;
-  total.outputTokens += addition.outputTokens;
-}
-
-const VALID_PROVIDERS = new Set<string>(["openai", "anthropic", "google"]);
-
-function toProviderName(value: string): ProviderName {
-  if (!VALID_PROVIDERS.has(value)) {
-    throw new Error(`Invalid LLM_PROVIDER: ${value}. Must be one of: openai, anthropic, google`);
-  }
-  // Safe after validation above
-  return value as ProviderName;
 }

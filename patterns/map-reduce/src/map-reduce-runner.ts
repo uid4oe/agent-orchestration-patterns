@@ -1,6 +1,6 @@
-import { createProvider } from "@agent-patterns/core";
+import { createProvider, addUsage } from "@agent-patterns/core";
 import type {
-  ProviderName,
+  ProviderConfig,
   StreamEmitter,
   TokenUsage,
 } from "@agent-patterns/core";
@@ -13,30 +13,24 @@ export interface MapReduceResult {
   totalUsage: TokenUsage;
 }
 
-function addUsage(total: TokenUsage, delta: TokenUsage): void {
-  total.inputTokens += delta.inputTokens;
-  total.outputTokens += delta.outputTokens;
-}
-
 export function createMapReduceRunner(
-  providerName: ProviderName,
-  modelName: string,
+  config: ProviderConfig,
 ): { run: (input: string, emitter: StreamEmitter) => Promise<MapReduceResult> } {
-  const splitterProvider = createProvider(providerName, modelName);
-  const reducerProvider = createProvider(providerName, modelName);
+  // Splitter and reducer run sequentially, so they can share a provider
+  const provider = createProvider(config.providerName, config.modelName);
 
   const splitter = new SplitterAgent({
     name: "splitter",
     role: "splitter",
     systemPrompt: "",
-    provider: splitterProvider,
+    provider,
   });
 
   const reducer = new ReducerAgent({
     name: "reducer",
     role: "reducer",
     systemPrompt: "",
-    provider: reducerProvider,
+    provider,
   });
 
   return {
@@ -61,9 +55,9 @@ export function createMapReduceRunner(
         }
 
         // Phase 3: Map — run all mappers concurrently
-        // CRITICAL: each mapper needs its own LLMProvider (lastUsage is instance state)
+        // Each mapper needs its own LLMProvider (lastUsage is instance state)
         const mapperPromises = subtasks.map((subtask, i) => {
-          const mapperProvider = createProvider(providerName, modelName);
+          const mapperProvider = createProvider(config.providerName, config.modelName);
           const mapper = new MapperAgent({
             name: `mapper-${i + 1}`,
             role: "mapper",

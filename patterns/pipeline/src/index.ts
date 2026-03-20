@@ -1,5 +1,5 @@
-import { createProvider } from "@agent-patterns/core";
-import type { PatternRunner, StreamEmitter, TokenUsage, ProviderName } from "@agent-patterns/core";
+import { createProvider, addUsage } from "@agent-patterns/core";
+import type { PatternRunner, ProviderConfig, StreamEmitter, TokenUsage } from "@agent-patterns/core";
 import { Researcher } from "./stages/researcher.js";
 import { Writer } from "./stages/writer.js";
 import { Editor } from "./stages/editor.js";
@@ -8,11 +8,8 @@ import { Pipeline } from "./pipeline.js";
 export const name = "pipeline";
 export const description = "Sequential content creation pipeline";
 
-export function createRunner(): PatternRunner {
-  const provider = createProvider(
-    (process.env["LLM_PROVIDER"] ?? "openai") as ProviderName,
-    process.env["LLM_MODEL"] ?? "gpt-4o-mini",
-  );
+export function createRunner(config: ProviderConfig): PatternRunner {
+  const provider = createProvider(config.providerName, config.modelName);
 
   const researcher = new Researcher({
     name: "researcher",
@@ -52,8 +49,7 @@ export function createRunner(): PatternRunner {
       try {
         const result = await pipeline.run(input, emitter);
         output = result.output;
-        totalUsage.inputTokens = result.totalUsage.inputTokens;
-        totalUsage.outputTokens = result.totalUsage.outputTokens;
+        addUsage(totalUsage, result.totalUsage);
       } catch (err) {
         emitter.emit({
           type: "error",
