@@ -57,6 +57,8 @@ describe("runEval", () => {
       chat: vi.fn().mockResolvedValue({
         content: JSON.stringify({ score, reasoning }),
         usage: { inputTokens: 20, outputTokens: 10 },
+        model: "test",
+        latencyMs: 0,
       } satisfies LLMResponse),
     } as unknown as LLMProvider;
   }

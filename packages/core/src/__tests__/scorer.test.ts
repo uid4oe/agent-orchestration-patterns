@@ -9,7 +9,7 @@ function createMockProvider(content: string): LLMProvider {
   return {
     lastUsage: usage,
     chatStream: vi.fn(),
-    chat: vi.fn().mockResolvedValue({ content, usage } satisfies LLMResponse),
+    chat: vi.fn().mockResolvedValue({ content, usage, model: "test", latencyMs: 0 } satisfies LLMResponse),
   } as unknown as LLMProvider;
 }
 
