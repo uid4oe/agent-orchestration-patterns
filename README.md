@@ -1,26 +1,18 @@
 # Agent Orchestration Patterns
 
-Educational project demonstrating 6 multi-agent orchestration patterns with real-time streaming, inline trace visualization, and LLM-as-judge evals.
+Educational project demonstrating 7 multi-agent orchestration patterns with real-time streaming, inline trace visualization, and LLM-as-judge evals.
 
-## Architecture
+## Patterns
 
-```mermaid
-graph LR
-    UI[React Frontend :3000] -->|POST + SSE| Server[Express Server :3001]
-    Server --> Router[Router Pattern]
-    Server --> Pipeline[Pipeline Pattern]
-    Server --> Supervisor[Supervisor Pattern]
-    Server --> Debate[Debate Pattern]
-    Server --> Swarm[Swarm Pattern]
-    Server --> MapReduce[Map-Reduce Pattern]
-    Router --> LLM[LLM Provider]
-    Pipeline --> LLM
-    Supervisor --> LLM
-    Debate --> LLM
-    Swarm --> LLM
-    MapReduce --> LLM
-    Server -.->|optional| Langfuse[Langfuse :3002]
-```
+| Pattern | Description | When to Use |
+|---------|-------------|-------------|
+| **[Router](patterns/router/)** | Classifies intent, routes to specialist agent | Customer support, help desks, any input-dependent dispatch |
+| **[Pipeline](patterns/pipeline/)** | Sequential chain: researcher -> writer -> editor | Content creation, data processing, multi-step transforms |
+| **[Supervisor](patterns/supervisor/)** | Plans subtasks, dispatches workers, reviews quality with retry | Research tasks, complex queries needing quality assurance |
+| **[Debate](patterns/debate/)** | Adversarial bull/bear arguments judged by neutral agent | Investment analysis, decision-making, exploring both sides |
+| **[Swarm](patterns/swarm/)** | Dynamic peer-to-peer agent handoffs without central routing | Customer service, multi-department routing, emergent workflows |
+| **[Map-Reduce](patterns/map-reduce/)** | Parallel fan-out to mappers, then merged reduction | Multi-faceted analysis, document processing, parallel research |
+| **[Reflection](patterns/reflection/)** | Generate-critique-revise loop until quality threshold met | Writing refinement, code review, iterative improvement |
 
 ## Quick Start
 
@@ -49,17 +41,6 @@ Open http://localhost:3000, select a pattern, and send a message.
 | `LANGFUSE_SECRET_KEY` | No | `sk-lf-...` |
 | `LANGFUSE_PUBLIC_KEY` | No | `pk-lf-...` |
 | `LANGFUSE_BASEURL` | No | `http://localhost:3002` |
-
-## Patterns
-
-| Pattern | Description | When to Use |
-|---------|-------------|-------------|
-| **[Router](patterns/router/)** | Classifies intent, routes to specialist agent | Customer support, help desks, any input-dependent dispatch |
-| **[Pipeline](patterns/pipeline/)** | Sequential chain: researcher -> writer -> editor | Content creation, data processing, multi-step transforms |
-| **[Supervisor](patterns/supervisor/)** | Plans subtasks, dispatches workers, reviews quality with retry | Research tasks, complex queries needing quality assurance |
-| **[Debate](patterns/debate/)** | Adversarial bull/bear arguments judged by neutral agent | Investment analysis, decision-making, exploring both sides |
-| **[Swarm](patterns/swarm/)** | Dynamic peer-to-peer agent handoffs without central routing | Customer service, multi-department routing, emergent workflows |
-| **[Map-Reduce](patterns/map-reduce/)** | Parallel fan-out to mappers, then merged reduction | Multi-faceted analysis, document processing, parallel research |
 
 ## Docker
 
@@ -99,32 +80,11 @@ agent-orchestration-patterns/
 │   ├── supervisor/      # Plan -> dispatch -> review -> retry loop
 │   ├── debate/          # Multi-round bull/bear debate + judge verdict
 │   ├── swarm/           # Dynamic agent-to-agent handoffs
-│   └── map-reduce/      # Parallel fan-out mappers + merged reduction
+│   ├── map-reduce/      # Parallel fan-out mappers + merged reduction
+│   └── reflection/      # Generate-critique-revise loop
 ├── docs/                # Architecture docs, implementation guides
 └── docker-compose.yml
 ```
-
-## API
-
-```
-GET  /api/patterns              # List available patterns
-POST /api/patterns/:name/run    # Run a pattern (SSE stream response)
-POST /api/evals/:name/run       # Run eval dataset against a pattern
-GET  /api/health                # Health check
-```
-
-### SSE Event Types
-
-All pattern runs stream events via SSE:
-
-| Event | Description |
-|-------|-------------|
-| `agent_start` | Agent begins processing (name + role) |
-| `chunk` | Streaming text content from an agent |
-| `handoff` | Control passes between agents (from, to, reason) |
-| `agent_end` | Agent finished (duration + token usage) |
-| `error` | Agent-level error |
-| `done` | Pattern run complete (total token usage) |
 
 ## Commands
 
@@ -134,13 +94,4 @@ npm run dev:server       # Server only (:3001)
 npm run dev:frontend     # Frontend only (:3000)
 npm run typecheck        # TypeScript check all workspaces
 npm run test             # Run all tests (vitest)
-```
-
-## Workspace Boundaries
-
-```
-packages/core/   -> imports nothing from other workspaces
-server/          -> imports from core + patterns
-patterns/*/      -> imports from core only
-frontend/        -> type-only imports from core (no runtime imports)
 ```
