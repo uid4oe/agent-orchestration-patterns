@@ -74,15 +74,7 @@ export function App() {
 
       {/* Main panels */}
       <main className="flex flex-1 min-h-0 flex-col lg:flex-row gap-2 lg:gap-2.5">
-        <div className="flex-[3] min-h-0 glass-strong rounded-2xl overflow-hidden">
-          <Chat
-            messages={messages}
-            isStreaming={isStreaming}
-            error={error}
-            totalUsage={totalUsage}
-          />
-        </div>
-        <div className="flex-[2] min-h-0 glass rounded-2xl overflow-hidden">
+        <div className="flex-[3] min-h-0 glass rounded-2xl overflow-hidden">
           <RightPanel
             selectedPattern={selectedPattern}
             traceNodes={traceNodes}
@@ -90,6 +82,14 @@ export function App() {
             totalUsage={totalUsage}
             isStreaming={isStreaming}
             onTryPrompt={handleTryPrompt}
+          />
+        </div>
+        <div className="flex-[2] min-h-0 glass-strong rounded-2xl overflow-hidden">
+          <Chat
+            messages={messages}
+            isStreaming={isStreaming}
+            error={error}
+            totalUsage={totalUsage}
           />
         </div>
       </main>

@@ -211,19 +211,15 @@ const supervisor: PatternContent = {
     "Quality-critical workflows: when outputs must meet a quality bar before proceeding",
     "Complex queries: tasks that benefit from decomposition into smaller subtasks",
   ],
-  architectureMermaid: `graph TB
-    Input[User Input] --> Supervisor[Supervisor Agent<br/>planner + reviewer]
-    Supervisor -->|plan| Plan["Subtask Plan<br/>[search, analysis, summary]"]
-    Plan --> Search[Search Worker<br/>information gatherer]
-    Search -->|output| Review1{Supervisor<br/>Review}
-    Review1 -->|adequate| Analysis[Analysis Worker<br/>analyst]
-    Review1 -->|retry| Search
-    Analysis -->|output| Review2{Supervisor<br/>Review}
-    Review2 -->|adequate| Summary[Summary Worker<br/>summarizer]
-    Review2 -->|retry| Analysis
-    Summary -->|output| Review3{Supervisor<br/>Review}
-    Review3 -->|adequate| Output[Final Output]
-    Review3 -->|retry| Summary`,
+  architectureMermaid: `graph LR
+    Input[User Input] --> Supervisor[Supervisor<br/>planner + reviewer]
+    Supervisor -->|plan| Search[Search]
+    Search -->|review| Supervisor
+    Supervisor -->|plan| Analysis[Analysis]
+    Analysis -->|review| Supervisor
+    Supervisor -->|plan| Summary[Summary]
+    Summary -->|review| Supervisor
+    Supervisor --> Output[Final Output]`,
   howItWorks: [
     "Supervisor plans: given the user's input, generates a JSON plan with ordered subtasks, each assigned to a worker",
     "Worker execution: each subtask is dispatched to its assigned worker with context from previous workers",
@@ -313,12 +309,11 @@ const debate: PatternContent = {
     "Decision-making: surface pros and cons before committing to a course of action",
     "Critical thinking: force exploration of opposing viewpoints on any topic",
   ],
-  architectureMermaid: `graph TB
-    Input[Thesis] --> Bull[Bull Debater<br/>argues FOR]
-    Bull -->|round 1| Bear[Bear Debater<br/>argues AGAINST]
+  architectureMermaid: `graph LR
+    Input[Thesis] --> Bull[Bull<br/>argues FOR]
+    Bull -->|round 1| Bear[Bear<br/>argues AGAINST]
     Bear -->|round 2| Bull
-    Bull -->|round 2| Bear
-    Bear -->|debate complete| Judge[Judge<br/>evaluates + verdict]
+    Bear -->|debate complete| Judge[Judge<br/>verdict]
     Judge --> Output[Final Verdict]`,
   howItWorks: [
     "The bull debater presents arguments in favor of the thesis",
@@ -402,18 +397,15 @@ const swarm: PatternContent = {
     "Multi-domain workflows: when the right specialist depends on context discovered during conversation",
     "Decentralized routing: when no single agent has enough context to route upfront",
   ],
-  architectureMermaid: `graph TB
-    Input[Customer Query] --> Triage[Triage Agent]
-    Triage -->|direct response| Output[Response]
-    Triage -->|HANDOFF:sales| Sales[Sales Agent]
-    Triage -->|HANDOFF:support| Support[Support Agent]
-    Triage -->|HANDOFF:billing| Billing[Billing Agent]
-    Sales -->|HANDOFF:support| Support
-    Sales -->|HANDOFF:billing| Billing
-    Support -->|HANDOFF:sales| Sales
-    Support -->|HANDOFF:billing| Billing
-    Billing -->|HANDOFF:sales| Sales
-    Billing -->|HANDOFF:support| Support
+  architectureMermaid: `graph LR
+    Input[Query] --> Triage[Triage]
+    Triage --> Output[Response]
+    Triage -->|handoff| Sales[Sales]
+    Triage -->|handoff| Support[Support]
+    Triage -->|handoff| Billing[Billing]
+    Sales <-->|handoff| Support
+    Sales <-->|handoff| Billing
+    Support <-->|handoff| Billing
     Sales --> Output
     Support --> Output
     Billing --> Output`,
@@ -593,13 +585,11 @@ const reflection: PatternContent = {
     "Iterative improvement: any task where output quality benefits from review cycles",
     "Quality gates: ensuring output meets specific criteria before acceptance",
   ],
-  architectureMermaid: `graph TB
-    Input[User Request] --> Gen1[Generator<br/>produces content]
-    Gen1 -->|handoff| Critic1[Critic<br/>evaluates quality]
-    Critic1 -->|verdict: pass| Output[Final Output]
-    Critic1 -->|verdict: revise| Gen2[Generator<br/>revises with feedback]
-    Gen2 -->|handoff| Critic2[Critic<br/>re-evaluates]
-    Critic2 -->|pass or max iterations| Output`,
+  architectureMermaid: `graph LR
+    Input[User Request] --> Generator[Generator]
+    Generator -->|handoff| Critic[Critic]
+    Critic -->|verdict: pass| Output[Final Output]
+    Critic -->|verdict: revise| Generator`,
   howItWorks: [
     "The generator produces initial content from the user's request",
     "The critic evaluates against criteria (coherence, evidence, persuasiveness, clarity, completeness) and returns a JSON verdict: pass or revise with feedback",
