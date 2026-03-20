@@ -1,5 +1,4 @@
-import { BaseAgent } from "@agent-patterns/core";
-import type { AgentResult, StreamEmitter } from "@agent-patterns/core";
+import { SimpleAgent } from "@agent-patterns/core";
 
 const SYSTEM_PROMPT = `You are an expert researcher. Given a topic, gather and present the most important facts, trends, statistics, and key points.
 
@@ -11,18 +10,12 @@ Your output should be well-organized research notes that include:
 
 Present your findings as structured bullet points grouped by theme. Be thorough but concise.`;
 
-export class Researcher extends BaseAgent {
-  protected async execute(
-    input: string,
-    emitter: StreamEmitter,
-  ): Promise<AgentResult> {
-    const { output, usage } = await this.chatStream(
-      [
-        { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: `Research the following topic thoroughly:\n\n${input}` },
-      ],
-      emitter,
-    );
-    return { output, usage, durationMs: 0 };
+export class Researcher extends SimpleAgent {
+  protected getSystemPrompt(): string {
+    return SYSTEM_PROMPT;
+  }
+
+  protected formatInput(input: string): string {
+    return `Research the following topic thoroughly:\n\n${input}`;
   }
 }
