@@ -1,0 +1,7 @@
+{
+  "name": "test",
+  "items": [
+    { "input": "What is 2+2?" },
+    { "input": "Explain gravity" }
+  ]
+}
