@@ -179,4 +179,4 @@ docker compose --profile langfuse up     # + Langfuse (:3002)
 - [x] Step 6: Docker (server + frontend + Langfuse profile + GHCR CI)
 - [x] Step 7: Documentation (root README, architecture, 7 pattern READMEs)
 - [x] Hardening: CORS parameterization, JSON validation, error handling, eval tests (193 total), CI pipeline, SimpleAgent refactor, SSE heartbeat, accessibility, rate limiting, request logging, gzip
-- [ ] Step 8: Educational Content (Learn tab, per-pattern docs, Try-it prompts)
+- [x] Step 8: Educational Content (Learn tab, per-pattern docs, Try-it prompts, 5 commits)
