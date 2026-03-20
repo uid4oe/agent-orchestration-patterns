@@ -10,6 +10,8 @@ import type { PatternRunner } from "@agent-patterns/core";
 import { createPatternRoutes } from "./routes/patterns.js";
 import type { PatternEntry } from "./routes/patterns.js";
 import { createEvalRoutes } from "./routes/evals.js";
+import { requestLogger } from "./middleware/request-logger.js";
+import { createRateLimiter } from "./middleware/rate-limiter.js";
 
 const PORT = Number(process.env["SERVER_PORT"] ?? 3001);
 
@@ -54,10 +56,15 @@ async function main(): Promise<void> {
 
   app.use(cors({ origin: process.env["FRONTEND_URL"] ?? "http://localhost:3000" }));
   app.use(express.json());
+  app.use(requestLogger);
 
   console.log(`LLM_PROVIDER=${process.env["LLM_PROVIDER"]}, LLM_MODEL=${process.env["LLM_MODEL"]}`);
   console.log("Loading patterns...");
   const patterns = await loadPatterns();
+
+  const rateLimiter = createRateLimiter(20, 60_000);
+  app.use("/api/patterns/:name/run", rateLimiter);
+  app.use("/api/evals/:name/run", rateLimiter);
 
   app.use("/api/patterns", createPatternRoutes(patterns));
   app.use("/api/evals", createEvalRoutes(patterns));
