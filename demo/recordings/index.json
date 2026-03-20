@@ -1,9 +1,0 @@
-[
-  { "name": "router", "description": "Routes input to the best specialist agent" },
-  { "name": "pipeline", "description": "Processes input through sequential stages" },
-  { "name": "supervisor", "description": "Supervisor delegates and reviews agent work" },
-  { "name": "debate", "description": "Agents debate, judge picks the winner" },
-  { "name": "swarm", "description": "Dynamic agent-to-agent handoffs" },
-  { "name": "map-reduce", "description": "Parallel fan-out with merged reduction" },
-  { "name": "reflection", "description": "Iterative generate-critique-revise loop" }
-]
