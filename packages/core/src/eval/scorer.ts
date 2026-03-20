@@ -35,12 +35,24 @@ export async function scoreLLMAsJudge(params: ScorerParams): Promise<ScorerResul
     { role: "user", content: buildJudgePrompt(criteria, input, output) },
   ]);
 
-  const parsed = JSON.parse(response.content) as { score: number; reasoning: string };
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(response.content);
+  } catch {
+    throw new Error(
+      `LLM returned invalid JSON for scoring: ${response.content.slice(0, 200)}`,
+    );
+  }
 
-  const score = Math.max(0, Math.min(1, parsed.score));
+  const score =
+    typeof (parsed as Record<string, unknown>).score === "number"
+      ? Math.max(0, Math.min(1, (parsed as Record<string, unknown>).score as number))
+      : 0;
 
-  return {
-    score,
-    reasoning: parsed.reasoning,
-  };
+  const reasoning =
+    typeof (parsed as Record<string, unknown>).reasoning === "string"
+      ? ((parsed as Record<string, unknown>).reasoning as string)
+      : "";
+
+  return { score, reasoning };
 }

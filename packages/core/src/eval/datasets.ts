@@ -39,7 +39,18 @@ export interface RunEvalParams {
 
 export async function loadDataset(path: string): Promise<Dataset> {
   const raw = await readFile(path, "utf-8");
-  return JSON.parse(raw) as Dataset;
+  const parsed: unknown = JSON.parse(raw);
+  if (
+    typeof parsed !== "object" ||
+    parsed === null ||
+    typeof (parsed as Record<string, unknown>).name !== "string" ||
+    !Array.isArray((parsed as Record<string, unknown>).items)
+  ) {
+    throw new Error(
+      `Invalid dataset format: expected { name: string, items: array }`,
+    );
+  }
+  return parsed as Dataset;
 }
 
 /** Collects the final output from a pattern run by buffering chunk events. */
