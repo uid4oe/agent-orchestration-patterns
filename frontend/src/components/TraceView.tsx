@@ -4,26 +4,7 @@ import type { TokenUsage, TraceEdge, TraceNode } from "../types.ts";
 import { AgentAvatar } from "./AgentAvatar.tsx";
 import { StatusBadge } from "./StatusBadge.tsx";
 
-/* ── Pattern descriptions ──────────────────────────────────── */
-
-const PATTERN_DESCRIPTIONS: Record<string, string> = {
-  router: "Routes input to the best specialist agent",
-  pipeline: "Processes input through a chain of agents sequentially",
-  supervisor: "A supervisor delegates and reviews agent work",
-  debate: "Agents debate and a judge picks the best answer",
-};
-
-function guessPattern(nodes: TraceNode[]): string | null {
-  for (const node of nodes) {
-    const role = node.role.toLowerCase();
-    if (role === "classifier" || role === "router") return "router";
-    if (role === "supervisor") return "supervisor";
-    if (role === "debater") return "debate";
-    if (role === "judge") return "debate";
-  }
-  if (nodes.length >= 2) return "pipeline";
-  return null;
-}
+import { PATTERN_CONTENT } from "../data/pattern-content.ts";
 
 /* ── Helpers ───────────────────────────────────────────────── */
 
@@ -451,6 +432,7 @@ interface TraceViewProps {
   traceEdges: TraceEdge[];
   totalUsage: TokenUsage | null;
   isStreaming?: boolean;
+  patternName?: string | null;
 }
 
 export function TraceView({
@@ -458,6 +440,7 @@ export function TraceView({
   traceEdges,
   totalUsage,
   isStreaming = false,
+  patternName = null,
 }: TraceViewProps) {
   if (traceNodes.length === 0) {
     return (
@@ -482,8 +465,9 @@ export function TraceView({
     );
   }
 
-  const pattern = guessPattern(traceNodes);
-  const patternDesc = pattern ? PATTERN_DESCRIPTIONS[pattern] : null;
+  const pattern = patternName ?? null;
+  const patternContent = pattern ? PATTERN_CONTENT[pattern] : null;
+  const patternDesc = patternContent?.tagline ?? null;
 
   // Build interleaved list: node, edge, node, edge, node...
   const elements: ReactNode[] = [];

@@ -73,6 +73,7 @@ export function RightPanel({
               traceEdges={traceEdges}
               totalUsage={totalUsage}
               isStreaming={isStreaming}
+              patternName={selectedPattern}
             />
           </div>
         ) : (
