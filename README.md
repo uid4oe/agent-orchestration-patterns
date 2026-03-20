@@ -25,7 +25,7 @@ https://github.com/user-attachments/assets/17a4b497-4420-472b-afef-46f4d85020e5
 ## Quick Start
 
 ```bash
-git clone https://github.com/your-org/agent-orchestration-patterns.git
+git clone https://github.com/uid4oe/agent-orchestration-patterns.git
 cd agent-orchestration-patterns
 
 cp .env.example .env

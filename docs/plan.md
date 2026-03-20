@@ -2,7 +2,7 @@
 
 ## Context
 
-Building a new standalone GitHub repo — an educational project demonstrating 4 common multi-agent orchestration patterns with a React frontend (live streaming + inline trace visualization), provider-agnostic LLM via OpenAI-compatible API, Langfuse for evals/benchmarking, and Docker.
+Building a new standalone GitHub repo — an educational project demonstrating 7 multi-agent orchestration patterns with a React frontend (live streaming + inline trace visualization), provider-agnostic LLM via Vercel AI SDK, Langfuse for evals/benchmarking, and Docker.
 
 ## Directory Structure
 
@@ -102,12 +102,20 @@ agent-orchestration-patterns/
 │   │       ├── agents/              # triage.ts, sales.ts, support.ts, billing.ts
 │   │       └── eval/
 │   │           └── dataset.json
-│   └── map-reduce/
+│   ├── map-reduce/
+│   │   ├── README.md
+│   │   └── src/
+│   │       ├── index.ts
+│   │       ├── map-reduce-runner.ts
+│   │       ├── agents/              # splitter.ts, mapper.ts, reducer.ts
+│   │       └── eval/
+│   │           └── dataset.json
+│   └── reflection/
 │       ├── README.md
 │       └── src/
 │           ├── index.ts
-│           ├── map-reduce-runner.ts
-│           ├── agents/              # splitter.ts, mapper.ts, reducer.ts
+│           ├── reflection-runner.ts
+│           ├── agents/              # generator.ts, critic.ts
 │           └── eval/
 │               └── dataset.json
 │
@@ -132,7 +140,7 @@ agent-orchestration-patterns/
 - Langfuse generation logged per LLM call (model, tokens, cost, latency)
 
 ### Server Architecture (single process, all patterns)
-The Express server loads all 4 patterns at startup. Each pattern exports a `run(input, emitter)` function. No separate services per pattern.
+The Express server loads all 7 patterns at startup. Each pattern exports a `run(input, emitter)` function. No separate services per pattern.
 
 ```
 ┌─────────────────────────────────────────────────────┐
@@ -215,7 +223,7 @@ type TokenUsage = { inputTokens: number; outputTokens: number }
 - Tailwind CSS
 - `useStream` hook for SSE
 
-## 6 Patterns
+## 7 Patterns
 
 | Pattern | Demo Scenario | Eval Criteria |
 |---------|---------------|---------------|
@@ -225,48 +233,26 @@ type TokenUsage = { inputTokens: number; outputTokens: number }
 | **Debate** | Investment analysis | Argument depth, judge reasoning |
 | **Swarm** | Dynamic agent handoffs | Handoff accuracy, multi-hop routing |
 | **Map-Reduce** | Multi-faceted analysis | Subtask decomposition, synthesis quality |
+| **Reflection** | Iterative writing refinement | Revision depth, critique specificity |
 
 ## Docker
 
-```yaml
-services:
-  postgres:
-    image: postgres:16
-    environment:
-      POSTGRES_DB: langfuse
-      POSTGRES_USER: langfuse
-      POSTGRES_PASSWORD: langfuse
-    volumes: [pgdata:/var/lib/postgresql/data]
+Pre-built multi-platform images (amd64 + arm64) are published to GHCR via GitHub Actions on every push to main.
 
-  langfuse:
-    image: langfuse/langfuse:2
-    ports: [3002:3000]
-    depends_on: [postgres]
-    environment:
-      DATABASE_URL: postgresql://langfuse:langfuse@postgres:5432/langfuse
-      NEXTAUTH_SECRET: secret
-      NEXTAUTH_URL: http://localhost:3002
+```bash
+# Pull and run pre-built images
+docker compose up
 
-  server:
-    build: { context: ., dockerfile: server/Dockerfile }
-    ports: [3001:3001]
-    depends_on: [langfuse]
-    env_file: .env
-    environment:
-      LANGFUSE_BASEURL: http://langfuse:3000
+# Build locally instead
+docker compose up --build
 
-  frontend:
-    build: { context: ., dockerfile: frontend/Dockerfile }
-    ports: [3000:3000]
-    depends_on: [server]
-
-volumes:
-  pgdata:
+# With Langfuse for evals (optional profile)
+docker compose --profile langfuse up
 ```
 
-- `docker compose up` — everything
 - Frontend: http://localhost:3000
-- Langfuse: http://localhost:3002
+- Server API: http://localhost:3001
+- Langfuse: http://localhost:3002 (langfuse profile only)
 
 ## Tech Stack
 
@@ -304,7 +290,7 @@ volumes:
 4. TraceView builds live showing agent flow
 5. `docker compose up` — all services start
 6. Frontend at :3000, Langfuse at :3002
-7. All 4 patterns work end-to-end in the UI
+7. All 7 patterns work end-to-end in the UI
 8. Run `POST /api/evals/router/run` → scores appear in Langfuse dashboard
 9. Langfuse shows: per-agent cost, token usage, eval scores across runs
 10. Switching LLM_BASE_URL between OpenRouter and Ollama works

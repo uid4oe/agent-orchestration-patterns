@@ -173,5 +173,5 @@ docker compose --profile langfuse up     # + Langfuse (:3002)
 - [x] Step 4f: Map-Reduce Pattern — parallel fan-out/fan-in, 3 agent types, 16 tests
 - [x] Step 4g: Reflection Pattern — generate-critique-revise loop, 2 agents, 18 tests
 - [x] Step 5: Eval System (Langfuse integration, auto dataset resolution)
-- [x] Step 6: Docker (server + frontend + Langfuse profile)
-- [x] Step 7: Documentation (root README, architecture, 4 pattern READMEs)
+- [x] Step 6: Docker (server + frontend + Langfuse profile + GHCR CI)
+- [x] Step 7: Documentation (root README, architecture, 7 pattern READMEs)
