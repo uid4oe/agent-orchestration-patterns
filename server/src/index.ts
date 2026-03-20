@@ -52,7 +52,7 @@ async function loadPatterns(): Promise<Map<string, PatternEntry>> {
 async function main(): Promise<void> {
   const app = express();
 
-  app.use(cors({ origin: "http://localhost:3000" }));
+  app.use(cors({ origin: process.env["FRONTEND_URL"] ?? "http://localhost:3000" }));
   app.use(express.json());
 
   console.log(`LLM_PROVIDER=${process.env["LLM_PROVIDER"]}, LLM_MODEL=${process.env["LLM_MODEL"]}`);
