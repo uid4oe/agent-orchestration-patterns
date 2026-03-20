@@ -50,7 +50,7 @@ describe("Router pattern module exports", () => {
   });
 
   it("createRunner returns a runner with a run method", () => {
-    const runner = createRunner();
+    const runner = createRunner({ providerName: "openai", modelName: "gpt-4o-mini" });
     expect(typeof runner.run).toBe("function");
   });
 });
@@ -69,7 +69,7 @@ describe("Router pattern runner", () => {
     // Second call: billing specialist responds
     mockStreamResponse("I can help with your invoice.", specialistUsage);
 
-    const runner = createRunner();
+    const runner = createRunner({ providerName: "openai", modelName: "gpt-4o-mini" });
     const { emitter, events } = createEmitter();
 
     const result = await runner.run("My invoice is wrong", emitter);
@@ -151,7 +151,7 @@ describe("Router pattern runner", () => {
     mockStreamResponse("TECHNICAL", routerUsage);
     mockStreamResponse("Let me help troubleshoot.", specialistUsage);
 
-    const runner = createRunner();
+    const runner = createRunner({ providerName: "openai", modelName: "gpt-4o-mini" });
     const { emitter, events } = createEmitter();
 
     await runner.run("The app crashes on upload", emitter);
@@ -178,7 +178,7 @@ describe("Router pattern runner", () => {
     mockStreamResponse("GENERAL", routerUsage);
     mockStreamResponse("Our hours are 9-5.", specialistUsage);
 
-    const runner = createRunner();
+    const runner = createRunner({ providerName: "openai", modelName: "gpt-4o-mini" });
     const { emitter, events } = createEmitter();
 
     await runner.run("What are your business hours?", emitter);
@@ -199,7 +199,7 @@ describe("Router pattern runner", () => {
     mockStreamResponse("I'm not sure about this one", routerUsage);
     mockStreamResponse("Let me help you.", specialistUsage);
 
-    const runner = createRunner();
+    const runner = createRunner({ providerName: "openai", modelName: "gpt-4o-mini" });
     const { emitter, events } = createEmitter();
 
     await runner.run("Some ambiguous question", emitter);
@@ -219,7 +219,7 @@ describe("Router pattern runner", () => {
       usage: Promise.resolve({ inputTokens: 0, outputTokens: 0, totalTokens: 0 }),
     } as unknown as ReturnType<typeof streamText>);
 
-    const runner = createRunner();
+    const runner = createRunner({ providerName: "openai", modelName: "gpt-4o-mini" });
     const { emitter, events } = createEmitter();
 
     const result = await runner.run("test input", emitter);
@@ -240,7 +240,7 @@ describe("Router pattern runner", () => {
     mockStreamResponse("BILLING", routerUsage);
     mockStreamResponse("Here to help.", specialistUsage);
 
-    const runner = createRunner();
+    const runner = createRunner({ providerName: "openai", modelName: "gpt-4o-mini" });
     const { emitter, events } = createEmitter();
 
     await runner.run("Invoice question", emitter);

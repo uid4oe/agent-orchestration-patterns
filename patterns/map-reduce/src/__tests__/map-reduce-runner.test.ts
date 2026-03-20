@@ -63,7 +63,7 @@ describe("Map-Reduce pattern module exports", () => {
   });
 
   it("createRunner returns a runner with a run method", () => {
-    const runner = createRunner();
+    const runner = createRunner({ providerName: "openai", modelName: "gpt-4o-mini" });
     expect(typeof runner.run).toBe("function");
   });
 });
@@ -84,7 +84,7 @@ describe("Map-Reduce pattern runner", () => {
     mockStreamResponse("Analysis of Z", mapperUsage);
     mockStreamResponse("Synthesized result", reducerUsage);
 
-    const runner = createRunner();
+    const runner = createRunner({ providerName: "openai", modelName: "gpt-4o-mini" });
     const { emitter, events } = createEmitter();
 
     const result = await runner.run("Analyze topic from three angles", emitter);
@@ -122,7 +122,7 @@ describe("Map-Reduce pattern runner", () => {
     mockStreamResponse("Result C", usage);
     mockStreamResponse("Final", usage);
 
-    const runner = createRunner();
+    const runner = createRunner({ providerName: "openai", modelName: "gpt-4o-mini" });
     const { emitter, events } = createEmitter();
 
     await runner.run("Test input", emitter);
@@ -159,7 +159,7 @@ describe("Map-Reduce pattern runner", () => {
     mockStreamResponse("Result B", usage);
     mockStreamResponse("Final", usage);
 
-    const runner = createRunner();
+    const runner = createRunner({ providerName: "openai", modelName: "gpt-4o-mini" });
     const { emitter, events } = createEmitter();
 
     await runner.run("Test input", emitter);
@@ -187,7 +187,7 @@ describe("Map-Reduce pattern runner", () => {
     mockStreamResponse("Result B", mapperUsage);
     mockStreamResponse("Final", reducerUsage);
 
-    const runner = createRunner();
+    const runner = createRunner({ providerName: "openai", modelName: "gpt-4o-mini" });
     const { emitter } = createEmitter();
 
     const result = await runner.run("Test input", emitter);
@@ -202,7 +202,7 @@ describe("Map-Reduce pattern runner", () => {
   it("emits error and done when splitter fails", async () => {
     mockGenerateText.mockRejectedValueOnce(new Error("LLM unavailable"));
 
-    const runner = createRunner();
+    const runner = createRunner({ providerName: "openai", modelName: "gpt-4o-mini" });
     const { emitter, events } = createEmitter();
 
     const result = await runner.run("Test input", emitter);
@@ -223,7 +223,7 @@ describe("Map-Reduce pattern runner", () => {
     mockStreamResponse("Single result", usage);
     mockStreamResponse("Final synthesis", usage);
 
-    const runner = createRunner();
+    const runner = createRunner({ providerName: "openai", modelName: "gpt-4o-mini" });
     const { emitter, events } = createEmitter();
 
     await runner.run("Simple topic", emitter);
@@ -262,7 +262,7 @@ describe("Map-Reduce pattern runner", () => {
     mockStreamResponse("Result", usage);
     mockStreamResponse("Final", usage);
 
-    const runner = createRunner();
+    const runner = createRunner({ providerName: "openai", modelName: "gpt-4o-mini" });
     const { emitter, events } = createEmitter();
 
     await runner.run("Test input", emitter);

@@ -53,7 +53,7 @@ describe("Supervisor Runner", () => {
   async function importRunner() {
     // Re-import to pick up the mock
     const mod = await import("../index.js");
-    return mod.createRunner();
+    return mod.createRunner({ providerName: "openai", modelName: "gpt-4o-mini" });
   }
 
   it("exports correct module shape", async () => {
@@ -61,6 +61,9 @@ describe("Supervisor Runner", () => {
     expect(mod.name).toBe("supervisor");
     expect(mod.description).toBe("Supervised research with quality review and retry");
     expect(typeof mod.createRunner).toBe("function");
+    // Verify it accepts config
+    const runner = mod.createRunner({ providerName: "openai", modelName: "gpt-4o-mini" });
+    expect(typeof runner.run).toBe("function");
   });
 
   it("emits done as the final event", async () => {

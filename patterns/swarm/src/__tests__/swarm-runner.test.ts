@@ -50,7 +50,7 @@ describe("Swarm pattern module exports", () => {
   });
 
   it("createRunner returns a runner with a run method", () => {
-    const runner = createRunner();
+    const runner = createRunner({ providerName: "openai", modelName: "gpt-4o-mini" });
     expect(typeof runner.run).toBe("function");
   });
 });
@@ -64,7 +64,7 @@ describe("Swarm pattern runner", () => {
     const triageUsage: TokenUsage = { inputTokens: 100, outputTokens: 50 };
     mockStreamResponse("Hello! How can I help you today?", triageUsage);
 
-    const runner = createRunner();
+    const runner = createRunner({ providerName: "openai", modelName: "gpt-4o-mini" });
     const { emitter, events } = createEmitter();
 
     const result = await runner.run("Hi, I need some help", emitter);
@@ -103,7 +103,7 @@ describe("Swarm pattern runner", () => {
       billingUsage,
     );
 
-    const runner = createRunner();
+    const runner = createRunner({ providerName: "openai", modelName: "gpt-4o-mini" });
     const { emitter, events } = createEmitter();
 
     const result = await runner.run("I was charged twice", emitter);
@@ -154,7 +154,7 @@ describe("Swarm pattern runner", () => {
       billingUsage,
     );
 
-    const runner = createRunner();
+    const runner = createRunner({ providerName: "openai", modelName: "gpt-4o-mini" });
     const { emitter, events } = createEmitter();
 
     const result = await runner.run("I want a refund for the upgrade", emitter);
@@ -189,7 +189,7 @@ describe("Swarm pattern runner", () => {
     mockStreamResponse("Going to sales. [HANDOFF:sales]", usage);
     mockStreamResponse("Going to support. [HANDOFF:support]", usage);
 
-    const runner = createRunner();
+    const runner = createRunner({ providerName: "openai", modelName: "gpt-4o-mini" });
     const { emitter, events } = createEmitter();
 
     const result = await runner.run("confusing request", emitter);
@@ -216,7 +216,7 @@ describe("Swarm pattern runner", () => {
       usage: Promise.resolve({ inputTokens: 0, outputTokens: 0, totalTokens: 0 }),
     } as unknown as ReturnType<typeof streamText>);
 
-    const runner = createRunner();
+    const runner = createRunner({ providerName: "openai", modelName: "gpt-4o-mini" });
     const { emitter, events } = createEmitter();
 
     const result = await runner.run("test input", emitter);
@@ -237,7 +237,7 @@ describe("Swarm pattern runner", () => {
     mockStreamResponse("Tech issue. [HANDOFF:support]", triageUsage);
     mockStreamResponse("Try restarting the app.", supportUsage);
 
-    const runner = createRunner();
+    const runner = createRunner({ providerName: "openai", modelName: "gpt-4o-mini" });
     const { emitter, events } = createEmitter();
 
     const result = await runner.run("App crashes on export", emitter);
@@ -259,7 +259,7 @@ describe("Swarm pattern runner", () => {
     const usage: TokenUsage = { inputTokens: 50, outputTokens: 25 };
     mockStreamResponse("Here to help!", usage);
 
-    const runner = createRunner();
+    const runner = createRunner({ providerName: "openai", modelName: "gpt-4o-mini" });
     const { emitter, events } = createEmitter();
 
     await runner.run("Hello", emitter);
