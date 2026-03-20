@@ -54,9 +54,14 @@ Open http://localhost:3000, select a pattern, and send a message.
 
 ## Docker
 
+Pre-built images are available on [GitHub Packages](https://github.com/uid4oe/agent-orchestration-patterns/pkgs/container):
+
 ```bash
-# Server + frontend
-docker compose up
+# Pull and run pre-built images (no build needed)
+LLM_PROVIDER=google LLM_MODEL=gemini-2.0-flash GOOGLE_GENERATIVE_AI_API_KEY=your-key docker compose up
+
+# Or build locally
+docker compose up --build
 
 # With Langfuse for evals (adds Langfuse + Postgres)
 docker compose --profile langfuse up

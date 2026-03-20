@@ -1,14 +1,27 @@
 services:
   server:
+    image: ghcr.io/uid4oe/agent-orchestration-patterns-server:latest
     build:
       context: .
       dockerfile: server/Dockerfile
     ports:
       - "3001:3001"
-    env_file: .env
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      - LLM_PROVIDER=${LLM_PROVIDER:-}
+      - LLM_MODEL=${LLM_MODEL:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - GOOGLE_GENERATIVE_AI_API_KEY=${GOOGLE_GENERATIVE_AI_API_KEY:-}
+      - LANGFUSE_SECRET_KEY=${LANGFUSE_SECRET_KEY:-}
+      - LANGFUSE_PUBLIC_KEY=${LANGFUSE_PUBLIC_KEY:-}
+      - LANGFUSE_BASEURL=${LANGFUSE_BASEURL:-}
     restart: unless-stopped
 
   frontend:
+    image: ghcr.io/uid4oe/agent-orchestration-patterns-frontend:latest
     build:
       context: .
       dockerfile: frontend/Dockerfile
