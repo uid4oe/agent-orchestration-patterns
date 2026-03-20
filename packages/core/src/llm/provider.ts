@@ -77,6 +77,28 @@ const PROVIDERS = {
 
 export type ProviderName = keyof typeof PROVIDERS;
 
+export interface ProviderConfig {
+  providerName: ProviderName;
+  modelName: string;
+}
+
+function isProviderName(value: string): value is ProviderName {
+  return value in PROVIDERS;
+}
+
+export function resolveProviderFromEnv(): ProviderConfig {
+  const raw = process.env["LLM_PROVIDER"] ?? "openai";
+  if (!isProviderName(raw)) {
+    throw new Error(
+      `Invalid LLM_PROVIDER: ${raw}. Must be one of: ${Object.keys(PROVIDERS).join(", ")}`,
+    );
+  }
+  return {
+    providerName: raw,
+    modelName: process.env["LLM_MODEL"] ?? "gpt-4o-mini",
+  };
+}
+
 export function createProvider(
   provider: ProviderName,
   model: string,

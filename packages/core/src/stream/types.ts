@@ -14,3 +14,8 @@ export type StreamEvent =
 export interface StreamEmitter {
   emit(event: StreamEvent): void;
 }
+
+export function addUsage(total: TokenUsage, delta: TokenUsage): void {
+  total.inputTokens += delta.inputTokens;
+  total.outputTokens += delta.outputTokens;
+}
