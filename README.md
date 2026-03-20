@@ -16,9 +16,11 @@ Run it locally for the fully interactive experience, or check out the **live dem
 | **[Map-Reduce](patterns/map-reduce/)** | Parallel fan-out to mappers, then merged reduction | Multi-faceted analysis, document processing, parallel research |
 | **[Reflection](patterns/reflection/)** | Generate-critique-revise loop until quality threshold met | Writing refinement, code review, iterative improvement |
 
-![Demo 1](https://github.com/user-attachments/assets/4f2997e9-8637-42c0-a571-3ef166d2b882)
-![Demo 2](https://github.com/user-attachments/assets/17c07a25-b514-45af-8d99-760da8d0177b)
-![Demo 3](https://github.com/user-attachments/assets/17a4b497-4420-472b-afef-46f4d85020e5)
+https://github.com/user-attachments/assets/4f2997e9-8637-42c0-a571-3ef166d2b882
+
+https://github.com/user-attachments/assets/17c07a25-b514-45af-8d99-760da8d0177b
+
+https://github.com/user-attachments/assets/17a4b497-4420-472b-afef-46f4d85020e5
 
 ## Quick Start
 
