@@ -1,6 +1,4 @@
-import { BaseAgent } from "@agent-patterns/core";
-import type { StreamEmitter } from "@agent-patterns/core";
-import type { AgentResult } from "@agent-patterns/core";
+import { SimpleAgent } from "@agent-patterns/core";
 
 const SYSTEM_PROMPT = `You are an impartial investment judge. After reading a full debate between a Bull (arguing FOR) and a Bear (arguing AGAINST) an investment thesis, you must evaluate the quality of both sides' arguments and declare a winner.
 
@@ -16,19 +14,8 @@ Your verdict must include:
 
 Be fair, thorough, and base your judgment on argument quality, not personal bias.`;
 
-export class Judge extends BaseAgent {
-  protected async execute(
-    input: string,
-    emitter: StreamEmitter,
-  ): Promise<AgentResult> {
-    const { output, usage } = await this.chatStream(
-      [
-        { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: input },
-      ],
-      emitter,
-    );
-
-    return { output, usage, durationMs: 0 };
+export class Judge extends SimpleAgent {
+  protected getSystemPrompt(): string {
+    return SYSTEM_PROMPT;
   }
 }
