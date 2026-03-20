@@ -48,6 +48,7 @@ Open http://localhost:3000, select a pattern, and send a message.
 | `ANTHROPIC_API_KEY` | If using Anthropic | `sk-ant-...` |
 | `OPENAI_API_KEY` | If using OpenAI | `sk-...` |
 | `GOOGLE_GENERATIVE_AI_API_KEY` | If using Google | `...` |
+| `FRONTEND_URL` | No | `http://localhost:3000` (CORS origin) |
 | `LANGFUSE_SECRET_KEY` | No | `sk-lf-...` |
 | `LANGFUSE_PUBLIC_KEY` | No | `pk-lf-...` |
 | `LANGFUSE_BASEURL` | No | `http://localhost:3002` |

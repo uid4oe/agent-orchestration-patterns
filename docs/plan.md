@@ -26,7 +26,8 @@ agent-orchestration-patterns/
 │           │   └── provider.ts     # OpenAI-compatible adapter (OpenRouter, Ollama, etc.)
 │           ├── agent/
 │           │   ├── types.ts        # AgentConfig, AgentResult
-│           │   └── base-agent.ts   # BaseAgent with stream emission + Langfuse logging
+│           │   ├── base-agent.ts   # BaseAgent with stream emission + Langfuse logging
+│           │   └── simple-agent.ts # SimpleAgent for single-prompt agents (extends BaseAgent)
 │           ├── stream/
 │           │   └── types.ts        # StreamEvent union type, TokenUsage
 │           └── eval/

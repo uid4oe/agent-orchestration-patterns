@@ -132,7 +132,8 @@ frontend/       →  type-only imports from core allowed (import type { ... })
 - **TypeScript:** strict, no `any`, no `as` casts, no `enum` (use unions), named exports only
 - **ESM:** `"type": "module"` everywhere. `.js` extensions in core/server/patterns (NodeNext). `.ts`/`.tsx` in frontend (bundler mode).
 - **Style:** kebab-case files, PascalCase classes/interfaces, camelCase functions
-- **Errors:** agents emit `StreamEvent` errors, never throw unhandled. Server catches all.
+- **Errors:** agents emit `StreamEvent` errors, never throw unhandled. Server catches all. Use `err instanceof Error ? err.message : String(err)`.
+- **Agents:** Use `SimpleAgent` (from core) for single-prompt agents. Only extend `BaseAgent` directly when custom orchestration logic is needed.
 - **Streaming:** non-negotiable — all LLM responses must stream
 - **Security:** API keys from env only, validate user input, no `eval()`
 - **Testing:** vitest, mock LLM provider, test behavior not implementation
@@ -175,3 +176,4 @@ docker compose --profile langfuse up     # + Langfuse (:3002)
 - [x] Step 5: Eval System (Langfuse integration, auto dataset resolution)
 - [x] Step 6: Docker (server + frontend + Langfuse profile + GHCR CI)
 - [x] Step 7: Documentation (root README, architecture, 7 pattern READMEs)
+- [x] Hardening: CORS parameterization, JSON validation, error handling, eval tests (193 total), CI pipeline, SimpleAgent refactor, SSE heartbeat, accessibility, rate limiting, request logging, gzip
