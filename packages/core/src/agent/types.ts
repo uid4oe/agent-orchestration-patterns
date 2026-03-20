@@ -11,5 +11,5 @@ export interface AgentConfig {
 export interface AgentResult {
   output: string;
   usage: TokenUsage;
-  durationMs: number;
+  durationMs?: number;
 }

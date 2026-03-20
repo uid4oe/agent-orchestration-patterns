@@ -29,6 +29,6 @@ export abstract class SimpleAgent extends BaseAgent {
       ],
       emitter,
     );
-    return { output, usage, durationMs: 0 };
+    return { output, usage };
   }
 }
