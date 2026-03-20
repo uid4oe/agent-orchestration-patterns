@@ -1,5 +1,4 @@
-import { BaseAgent } from "@agent-patterns/core";
-import type { AgentResult, StreamEmitter } from "@agent-patterns/core";
+import { SimpleAgent } from "@agent-patterns/core";
 
 const SYSTEM_PROMPT = `You are a customer support triage agent. You are the first point of contact for all customer inquiries.
 
@@ -16,18 +15,8 @@ If you can handle the query yourself (e.g., greetings, vague questions), respond
 
 When handing off, briefly acknowledge the customer's request before the directive. Keep your response concise.`;
 
-export class TriageAgent extends BaseAgent {
-  protected async execute(
-    input: string,
-    emitter: StreamEmitter,
-  ): Promise<AgentResult> {
-    const { output, usage } = await this.chatStream(
-      [
-        { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: input },
-      ],
-      emitter,
-    );
-    return { output, usage, durationMs: 0 };
+export class TriageAgent extends SimpleAgent {
+  protected getSystemPrompt(): string {
+    return SYSTEM_PROMPT;
   }
 }

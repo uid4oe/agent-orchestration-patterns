@@ -1,5 +1,4 @@
-import { BaseAgent } from "@agent-patterns/core";
-import type { AgentResult, StreamEmitter } from "@agent-patterns/core";
+import { SimpleAgent } from "@agent-patterns/core";
 
 const SYSTEM_PROMPT = `You are a technical support specialist agent. You handle technical issues, troubleshooting, bugs, crashes, errors, and feature questions.
 
@@ -16,18 +15,8 @@ If the customer's question shifts to a different domain, hand off to the appropr
 
 When handing off, briefly explain why before the directive. Otherwise, provide clear, step-by-step troubleshooting guidance.`;
 
-export class SupportAgent extends BaseAgent {
-  protected async execute(
-    input: string,
-    emitter: StreamEmitter,
-  ): Promise<AgentResult> {
-    const { output, usage } = await this.chatStream(
-      [
-        { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: input },
-      ],
-      emitter,
-    );
-    return { output, usage, durationMs: 0 };
+export class SupportAgent extends SimpleAgent {
+  protected getSystemPrompt(): string {
+    return SYSTEM_PROMPT;
   }
 }

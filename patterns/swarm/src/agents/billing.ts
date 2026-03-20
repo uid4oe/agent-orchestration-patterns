@@ -1,5 +1,4 @@
-import { BaseAgent } from "@agent-patterns/core";
-import type { AgentResult, StreamEmitter } from "@agent-patterns/core";
+import { SimpleAgent } from "@agent-patterns/core";
 
 const SYSTEM_PROMPT = `You are a billing specialist agent for customer support. You handle invoices, payments, refunds, and subscription billing questions.
 
@@ -16,18 +15,8 @@ If the customer's question shifts to a different domain, hand off to the appropr
 
 When handing off, briefly explain why before the directive. Otherwise, address the billing concern with clear details about charges, timelines, and next steps.`;
 
-export class BillingAgent extends BaseAgent {
-  protected async execute(
-    input: string,
-    emitter: StreamEmitter,
-  ): Promise<AgentResult> {
-    const { output, usage } = await this.chatStream(
-      [
-        { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: input },
-      ],
-      emitter,
-    );
-    return { output, usage, durationMs: 0 };
+export class BillingAgent extends SimpleAgent {
+  protected getSystemPrompt(): string {
+    return SYSTEM_PROMPT;
   }
 }
