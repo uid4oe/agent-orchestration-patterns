@@ -51,7 +51,7 @@ export function createRunner(): PatternRunner {
         emitter.emit({
           type: "error",
           agent: "system",
-          message: String(err),
+          message: err instanceof Error ? err.message : String(err),
         });
       } finally {
         emitter.emit({ type: "done", totalUsage });

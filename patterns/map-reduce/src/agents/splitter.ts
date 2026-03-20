@@ -75,7 +75,7 @@ export class SplitterAgent extends BaseAgent {
       emitter.emit({
         type: "error",
         agent: this.config.name,
-        message: String(err),
+        message: err instanceof Error ? err.message : String(err),
       });
       throw err;
     }
