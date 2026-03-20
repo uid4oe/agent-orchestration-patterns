@@ -1,5 +1,4 @@
-import { BaseAgent } from "@agent-patterns/core";
-import type { AgentResult, StreamEmitter } from "@agent-patterns/core";
+import { SimpleAgent } from "@agent-patterns/core";
 
 const SYSTEM_PROMPT = `You are a customer support router. Your ONLY job is to classify the user's intent into exactly one category.
 
@@ -28,18 +27,8 @@ export function parseIntent(raw: string): IntentCategory {
   return "GENERAL";
 }
 
-export class RouterAgent extends BaseAgent {
-  protected async execute(
-    input: string,
-    emitter: StreamEmitter,
-  ): Promise<AgentResult> {
-    const { output, usage } = await this.chatStream(
-      [
-        { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: input },
-      ],
-      emitter,
-    );
-    return { output, usage, durationMs: 0 };
+export class RouterAgent extends SimpleAgent {
+  protected getSystemPrompt(): string {
+    return SYSTEM_PROMPT;
   }
 }
