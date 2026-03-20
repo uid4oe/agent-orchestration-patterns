@@ -33,7 +33,7 @@ export class SplitterAgent extends BaseAgent {
       agent: this.config.name,
       content: response.content,
     });
-    return { output: response.content, usage: response.usage, durationMs: 0 };
+    return { output: response.content, usage: response.usage };
   }
 
   async split(

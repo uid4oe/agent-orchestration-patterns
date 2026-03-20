@@ -74,7 +74,7 @@ class MockAgent extends BaseAgent {
       { role: "user", content: input },
     ];
     const { output, usage } = await this.chatStream(messages, emitter);
-    return { output, usage, durationMs: 0 };
+    return { output, usage };
   }
 }
 

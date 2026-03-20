@@ -43,7 +43,7 @@ class StubAgent extends BaseAgent {
       { role: "user", content: `${this.prefix}: ${input}` },
     ];
     const { output, usage } = await this.chatStream(messages, emitter);
-    return { output, usage, durationMs: 0 };
+    return { output, usage };
   }
 }
 
