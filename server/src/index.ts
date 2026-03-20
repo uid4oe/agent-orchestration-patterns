@@ -6,7 +6,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 config({ path: resolve(__dirname, "../../.env") });
 import express from "express";
 import cors from "cors";
-import type { PatternRunner } from "@agent-patterns/core";
+import type { PatternRunner, ProviderConfig } from "@agent-patterns/core";
+import { resolveProviderFromEnv } from "@agent-patterns/core";
 import { createPatternRoutes } from "./routes/patterns.js";
 import type { PatternEntry } from "./routes/patterns.js";
 import { createEvalRoutes } from "./routes/evals.js";
@@ -18,7 +19,7 @@ const PORT = Number(process.env["SERVER_PORT"] ?? 3001);
 interface PatternModule {
   readonly name: string;
   readonly description: string;
-  readonly createRunner: () => PatternRunner;
+  readonly createRunner: (config: ProviderConfig) => PatternRunner;
 }
 
 const PATTERN_PACKAGES = [
@@ -31,7 +32,7 @@ const PATTERN_PACKAGES = [
   "@agent-patterns/reflection",
 ] as const;
 
-async function loadPatterns(): Promise<Map<string, PatternEntry>> {
+async function loadPatterns(config: ProviderConfig): Promise<Map<string, PatternEntry>> {
   const patterns = new Map<string, PatternEntry>();
 
   for (const pkg of PATTERN_PACKAGES) {
@@ -40,7 +41,7 @@ async function loadPatterns(): Promise<Map<string, PatternEntry>> {
       patterns.set(mod.name, {
         name: mod.name,
         description: mod.description,
-        runner: mod.createRunner(),
+        runner: mod.createRunner(config),
       });
       console.log(`  Loaded pattern: ${mod.name}`);
     } catch {
@@ -58,9 +59,10 @@ async function main(): Promise<void> {
   app.use(express.json());
   app.use(requestLogger);
 
-  console.log(`LLM_PROVIDER=${process.env["LLM_PROVIDER"]}, LLM_MODEL=${process.env["LLM_MODEL"]}`);
+  const providerConfig = resolveProviderFromEnv();
+  console.log(`LLM_PROVIDER=${providerConfig.providerName}, LLM_MODEL=${providerConfig.modelName}`);
   console.log("Loading patterns...");
-  const patterns = await loadPatterns();
+  const patterns = await loadPatterns(providerConfig);
 
   const rateLimiter = createRateLimiter(20, 60_000);
   app.use("/api/patterns/:name/run", rateLimiter);

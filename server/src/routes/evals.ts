@@ -3,13 +3,14 @@ import { fileURLToPath } from "node:url";
 import { Router } from "express";
 import {
   createProvider,
+  resolveProviderFromEnv,
   loadDataset,
   runEval,
   createTrace,
   score as langfuseScore,
   logGeneration,
 } from "@agent-patterns/core";
-import type { ProviderName, EvalResult } from "@agent-patterns/core";
+import type { EvalResult } from "@agent-patterns/core";
 import type { PatternMap } from "./patterns.js";
 
 /**
@@ -44,7 +45,7 @@ export function createEvalRoutes(patterns: PatternMap): Router {
 
     const criteria = Array.isArray(body.criteria) ? (body.criteria as string[]) : ["relevance"];
 
-    const providerName = (process.env["LLM_PROVIDER"] ?? "openai") as ProviderName;
+    const { providerName } = resolveProviderFromEnv();
     const evalModel = process.env["EVAL_MODEL"] ?? "gpt-4o-mini";
 
     try {
