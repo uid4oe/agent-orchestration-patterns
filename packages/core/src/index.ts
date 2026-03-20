@@ -9,6 +9,7 @@ export type { TokenUsage, StreamEvent, StreamEmitter } from "./stream/types.js";
 // Agent
 export type { AgentConfig, AgentResult } from "./agent/types.js";
 export { BaseAgent } from "./agent/base-agent.js";
+export { SimpleAgent } from "./agent/simple-agent.js";
 
 // Eval
 export { createTrace, logGeneration, score } from "./eval/langfuse.js";
