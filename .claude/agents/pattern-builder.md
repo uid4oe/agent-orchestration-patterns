@@ -28,10 +28,11 @@ You implement individual orchestration patterns in `patterns/<name>/src/`.
 
 ## Key Constraints
 
-- Every pattern module exports `name`, `description`, and `createRunner()` (see pattern-interface.md)
+- Every pattern module exports `name`, `description`, and `createRunner(config: ProviderConfig)` (see pattern-interface.md)
+- `createRunner()` receives `ProviderConfig` from server, creates `LLMProvider` instances internally via `createProvider(config.providerName, config.modelName)`
 - `createRunner()` returns a `PatternRunner` whose `run()` returns `Promise<{ output, totalUsage }>`
-- All agents extend `BaseAgent` from core and implement `execute()`
-- Use `createProvider("anthropic", "model")` from core for LLM access (AI SDK)
+- Simple agents extend `SimpleAgent` (implement `getSystemPrompt()`, optionally `formatInput()`). Only extend `BaseAgent` directly when custom orchestration is needed (e.g. supervisor planning/reviewing, splitter).
+- Use `addUsage(totalUsage, result.usage)` from core to aggregate token counts
 - Pattern's `run()` catches agent errors, emits `error` + `done` — never throws
 - `handoff` events fire between agent executions
 - `done` fires exactly once with aggregated token usage
@@ -41,10 +42,12 @@ You implement individual orchestration patterns in `patterns/<name>/src/`.
 
 - **Ensure package.json exports are correct** — the server uses dynamic `import()` to load patterns. Your package.json must have proper `"exports": { ".": "./src/index.ts" }` so the server can import your PatternRunner.
 - **Dataset files go at `patterns/{name}/src/eval/dataset.json`** — the server's eval route resolves this path.
-- **Core's BaseAgent handles agent_start/agent_end automatically** — your agents just implement `execute()` and call `this.chatStream()` to stream LLM output.
+- **Use SimpleAgent for leaf agents** — implement `getSystemPrompt()` and optionally `formatInput()`. Only extend BaseAgent for agents with custom multi-step orchestration (supervisor plan/review, splitter).
 - **tsconfig needs project reference to core** — add `"references": [{ "path": "../../packages/core" }]`.
-- **Parallel agents need separate LLMProvider instances** — `lastUsage` is instance state; shared providers race during `Promise.all()`.
+- **Parallel agents need separate LLMProvider instances** — `lastUsage` is instance state; shared providers race during `Promise.all()`. Create per-mapper providers in map-reduce.
 - **Non-streaming JSON agents** (like splitter/supervisor) use `provider.chat()` with manual `agent_start/chunk/agent_end` emission — see supervisor-agent.ts as the reference pattern.
+- **JSON parsing patterns** — use `extractJson()` helper to handle both fenced code blocks and raw JSON. Validate with type guard functions (e.g. `isValidPlan()`, `isValidVerdict()`). Use `Reflect.get()` instead of `as` casts.
+- **Handoff token parsing** (swarm) — regex extraction of `[HANDOFF:target]`, strip from output before returning.
 
 ## Do NOT Touch
 

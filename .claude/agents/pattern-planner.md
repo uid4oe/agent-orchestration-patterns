@@ -21,7 +21,7 @@ When someone asks to implement a new orchestration pattern (e.g., "add a swarm p
 3. `.claude/docs/streaming-protocol.md` — event emission rules
 4. `.claude/docs/commit-guidelines.md` — commit sizing and sequence
 5. `.claude/docs/feedback-loop.md` — post-completion process
-6. Existing step docs for reference: `docs/steps/04a-pattern-router.md` through `04d-pattern-debate.md`
+6. Existing step docs for reference: `docs/steps/04a-pattern-router.md` through `04g-pattern-reflection.md`
 7. `.claude/diary/` — check for relevant learnings from prior pattern implementations
 
 ## Full Lifecycle
@@ -32,7 +32,7 @@ For each new pattern, define:
 
 - **Concept**: What orchestration paradigm does it demonstrate?
 - **Demo scenario**: What use case makes the pattern intuitive?
-- **Agents**: Which BaseAgent subclasses are needed? What are their roles and system prompts?
+- **Agents**: Which SimpleAgent/BaseAgent subclasses are needed? What are their roles and system prompts? Use SimpleAgent for leaf agents, BaseAgent only for custom orchestration.
 - **Orchestrator**: How do agents interact? (sequential, parallel, loop, dynamic handoff?)
 - **Streaming events**: What handoff events are emitted and when?
 - **Eval dataset**: 10 test items with expected behaviors
@@ -89,6 +89,8 @@ Single commit updating:
 - `server/src/index.ts` — add to `PATTERN_PACKAGES`
 - `server/package.json` — add workspace dependency
 - `frontend/src/components/PatternSelector.tsx` — add to `PATTERN_ICONS`
+- `frontend/src/data/pattern-content.ts` — add educational content entry
+- `tsconfig.json` (root) — add project reference for new pattern
 
 ### 5. Update Docs
 
@@ -111,9 +113,11 @@ Per `.claude/docs/feedback-loop.md`:
 - `package.json` exports: `{ ".": "./src/index.ts" }`
 - `tsconfig.json` extends `../../tsconfig.base.json`, references core
 - Root `package.json` workspaces glob `patterns/*` auto-discovers new patterns
+- `createRunner(config: ProviderConfig)` — receives provider config from server, creates LLMProvider instances internally
 - All LLM responses must stream (except structured JSON output agents like splitter/supervisor)
 - `done` event fires exactly once with aggregated usage
 - `run()` never throws — errors are emitted as events
+- Use `addUsage()` from core to aggregate token counts across agents
 
 ## Do NOT Touch
 

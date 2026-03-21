@@ -55,10 +55,17 @@ agent-orchestration-patterns/
 │       ├── components/
 │       │   ├── Chat.tsx             # message list + input box
 │       │   ├── MessageBubble.tsx    # agent messages with name/role badge
-│       │   ├── TraceView.tsx        # inline trace viz (nodes + arrows, builds live)
-│       │   └── PatternSelector.tsx  # dropdown to pick pattern
+│       │   ├── AgentFlowSummary.tsx # compact live agent trace
+│       │   ├── PatternSelector.tsx  # pattern tab buttons
+│       │   ├── RightPanel.tsx       # learn panel wrapper
+│       │   ├── LearnView.tsx        # per-pattern educational content
+│       │   ├── MermaidDiagram.tsx   # SVG architecture diagrams
+│       │   ├── CollapsibleSection.tsx # expand/collapse wrapper
+│       │   └── SuggestedPrompts.tsx # try-it prompt buttons
 │       ├── hooks/
 │       │   └── useStream.ts         # SSE hook, parses stream events
+│       ├── data/
+│       │   └── pattern-content.ts   # structured educational content
 │       └── types.ts
 │
 ├── patterns/                        # NOT separate services — loaded by server at startup
@@ -166,7 +173,7 @@ The Express server loads all 7 patterns at startup. Each pattern exports a `run(
 ```typescript
 export const name: string;        // "router", "pipeline", etc.
 export const description: string; // one-line for the UI
-export function createRunner(): PatternRunner;
+export function createRunner(config: ProviderConfig): PatternRunner;
 
 // PatternRunner (from core):
 interface PatternRunner {

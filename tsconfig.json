@@ -7,6 +7,9 @@
     { "path": "patterns/router" },
     { "path": "patterns/pipeline" },
     { "path": "patterns/supervisor" },
-    { "path": "patterns/debate" }
+    { "path": "patterns/debate" },
+    { "path": "patterns/swarm" },
+    { "path": "patterns/map-reduce" },
+    { "path": "patterns/reflection" }
   ]
 }

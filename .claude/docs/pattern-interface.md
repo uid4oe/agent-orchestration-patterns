@@ -18,21 +18,21 @@ Each pattern package must export three things from `src/index.ts`:
 
 ```typescript
 // patterns/router/src/index.ts
-import { createProvider, BaseAgent } from "@agent-patterns/core";
-import type { PatternRunner, StreamEmitter, TokenUsage } from "@agent-patterns/core";
+import { createProvider, addUsage } from "@agent-patterns/core";
+import type { PatternRunner, StreamEmitter, TokenUsage, ProviderConfig } from "@agent-patterns/core";
 
 export const name = "router";
 export const description = "Intent-based delegation to specialist agents";
 
-export function createRunner(): PatternRunner {
-  const provider = createProvider("anthropic", "claude-sonnet-4-20250514");
-  // instantiate agents...
+export function createRunner(config: ProviderConfig): PatternRunner {
+  const provider = createProvider(config.providerName, config.modelName);
+  // instantiate agents with provider...
   return {
     async run(input, emitter) {
       const totalUsage: TokenUsage = { inputTokens: 0, outputTokens: 0 };
       let output = "";
       try {
-        // orchestration logic — call agents, accumulate usage + output...
+        // orchestration logic — call agents, addUsage(totalUsage, result.usage)...
       } catch (err) {
         emitter.emit({ type: "error", agent: "system", message: String(err) });
       } finally {
@@ -44,15 +44,16 @@ export function createRunner(): PatternRunner {
 }
 ```
 
-The server dynamically imports each pattern and calls `createRunner()`:
+The server dynamically imports each pattern and calls `createRunner(config)`:
 
 ```typescript
 // server/src/index.ts (simplified)
+const config = resolveProviderFromEnv(); // { providerName, modelName }
 const mod = await import("@agent-patterns/router");
 patterns.set(mod.name, {
   name: mod.name,
   description: mod.description,
-  runner: mod.createRunner(),
+  runner: mod.createRunner(config),
 });
 ```
 
@@ -68,23 +69,21 @@ patterns.set(mod.name, {
 
 ## LLM Provider
 
-Patterns use the AI SDK via the `createProvider` factory:
+Patterns receive a `ProviderConfig` from the server and create providers internally:
 
 ```typescript
 import { createProvider } from "@agent-patterns/core";
+import type { ProviderConfig } from "@agent-patterns/core";
 
-// Direct:
-const provider = createProvider("anthropic", "claude-sonnet-4-20250514");
-
-// From env vars:
-const provider = createProvider(
-  (process.env.LLM_PROVIDER ?? "openai") as ProviderName,
-  process.env.LLM_MODEL ?? "gpt-4o-mini",
-);
+// Inside createRunner(config):
+const provider = createProvider(config.providerName, config.modelName);
 ```
 
+`ProviderConfig` is `{ providerName: ProviderName; modelName: string }`.
 Supported providers: `"anthropic"`, `"openai"`, `"google"`.
+
+Patterns should NOT read env vars directly — the server resolves provider config once via `resolveProviderFromEnv()` and passes it to all patterns.
 
 ## Pattern Details
 
-See `docs/steps/04a-*.md` through `04d-*.md` for full implementation guides.
+See `docs/steps/04a-*.md` through `04g-*.md` for full implementation guides.

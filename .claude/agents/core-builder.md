@@ -4,10 +4,10 @@ You build the shared core library at `packages/core/src/`.
 
 ## Your Scope
 
-- `packages/core/src/llm/` — LLM types and AI SDK-backed provider
-- `packages/core/src/agent/` — BaseAgent class and agent types
-- `packages/core/src/stream/` — StreamEvent types and StreamEmitter
-- `packages/core/src/eval/` — Langfuse client, scorer, dataset runner
+- `packages/core/src/llm/` — LLM types, AI SDK-backed provider, `createProvider()`, `resolveProviderFromEnv()`
+- `packages/core/src/agent/` — BaseAgent, SimpleAgent, and agent types
+- `packages/core/src/stream/` — StreamEvent types, StreamEmitter, `addUsage()` utility
+- `packages/core/src/eval/` — Langfuse client, scorer, dataset runner, PatternRunner interface
 - `packages/core/src/index.ts` — barrel exports
 
 ## Read Before Starting
@@ -20,11 +20,14 @@ You build the shared core library at `packages/core/src/`.
 
 - Uses **Vercel AI SDK** (`ai`, `@ai-sdk/openai`, `@ai-sdk/anthropic`, `@ai-sdk/google`)
 - `LLMProvider` wraps AI SDK's `generateText`/`streamText` behind a stable API
-- `createProvider("anthropic", "claude-sonnet-4-20250514")` is the main factory
+- `createProvider("anthropic", "claude-sonnet-4-20250514")` is the main factory; `resolveProviderFromEnv()` reads `LLM_PROVIDER`/`LLM_MODEL` env vars
+- `ProviderConfig` type (`{ providerName, modelName }`) is passed to pattern `createRunner()` calls
 - AI SDK uses `inputTokens`/`outputTokens` (not promptTokens/completionTokens) and `maxOutputTokens` (not maxTokens)
-- Langfuse is optional — if env vars missing, export no-op stubs
+- Langfuse is optional — functions accept `trace: LangfuseTrace | null` and no-op when null (env vars missing → `createTrace()` returns null)
 - BaseAgent emits `agent_start`/`agent_end` automatically; subclasses implement `execute()`
+- SimpleAgent extends BaseAgent for single-prompt agents: subclasses implement `getSystemPrompt()` and optionally `formatInput()`
 - BaseAgent re-throws errors after emitting `error` event (orchestrators catch)
+- `addUsage(total, delta)` mutates total by adding delta's tokens — used by pattern runners to aggregate usage
 
 ## Learnings from Previous Runs
 

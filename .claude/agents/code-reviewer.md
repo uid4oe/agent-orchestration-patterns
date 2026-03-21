@@ -26,17 +26,19 @@ Streaming Protocol (.claude/docs/streaming-protocol.md)
 [ ] Pattern's run() catches errors, emits error + done, never throws
 
 Pattern Interface (.claude/docs/pattern-interface.md)
-[ ] Pattern exports: name, description, createRunner() — NOT a flat PatternRunner object
+[ ] Pattern exports: name, description, createRunner(config: ProviderConfig) — NOT a flat PatternRunner object
 [ ] run() returns Promise<{ output, totalUsage }> (not void)
-[ ] Agents extend BaseAgent
+[ ] Leaf agents extend SimpleAgent (getSystemPrompt + optional formatInput); only BaseAgent for custom orchestration
 
 Code Quality
-[ ] No any types
+[ ] No any types, no `as` casts (use type guards and Reflect.get)
 [ ] No default exports
 [ ] No unused imports/variables/code
 [ ] No comments unless genuinely non-obvious
 [ ] Error handling: agents emit error events, orchestrators catch and emit done
 [ ] LLM uses AI SDK via LLMProvider (generateText/streamText), not raw fetch
+[ ] Token usage aggregated via addUsage() from core
+[ ] JSON parsing uses extractJson() + validation guards (not raw JSON.parse with as casts)
 
 Commit Quality (.claude/docs/commit-guidelines.md)
 [ ] Conventional prefix (feat:, fix:, test:, etc.)

@@ -10,11 +10,11 @@ Add educational content tabs to the right panel. Users can switch between "Trace
 
 ## Demo Scenario
 
-1. User opens app → sees Learn tab with overview grid of all 7 patterns
-2. Selects "Router" pattern → Learn tab shows Router documentation with collapsible sections
+1. User opens app → sees Learn panel (left) with overview grid of all 7 patterns
+2. Selects "Router" pattern → Learn panel shows Router documentation with collapsible sections
 3. Clicks "Try it: billing route" → input field fills with prompt, user presses Enter
-4. Panel auto-switches to Trace tab → watches live execution
-5. User switches back to Learn tab to read about tradeoffs
+4. AgentFlowSummary appears (right) showing live agent execution trace
+5. User reads tradeoffs in Learn panel while viewing agent flow
 
 ## Implementation Order
 
@@ -39,35 +39,24 @@ Add educational content tabs to the right panel. Users can switch between "Trace
 
 **Commit:** `feat(frontend): add structured educational content data for all patterns`
 
-### 8.3 TabBar Component (`frontend/src/components/TabBar.tsx`)
-
-- WAI-ARIA: `role="tablist"`, `role="tab"`, `aria-selected`, `aria-controls`
-- Keyboard: Arrow Left/Right to switch, Home/End for first/last
-- Two tabs with SVG icons: Trace + Learn
-- Sliding underline indicator with CSS transition
-- Matches existing design system typography
-
-**Commit:** `feat(frontend): add WAI-ARIA compliant TabBar component`
-
-### 8.4 CollapsibleSection Component (`frontend/src/components/CollapsibleSection.tsx`)
+### 8.3 CollapsibleSection Component (`frontend/src/components/CollapsibleSection.tsx`)
 
 - Reusable expand/collapse wrapper (mirrors TraceNodeCard pattern)
 - Props: title, icon, defaultOpen, children
 - Accessibility: `aria-expanded`, `aria-controls`, keyboard Enter/Space
 - animate-fade-in on expand
 
-**Commit:** `feat(frontend): add reusable CollapsibleSection component`
+**Commit:** `feat(frontend): add TabBar, CollapsibleSection, and SuggestedPrompts components`
 
-### 8.5 RightPanel + App Integration
+### 8.4 RightPanel + App Integration
 
 - Create `frontend/src/components/RightPanel.tsx`
-- Manages activeTab per pattern (Map<string, "trace" | "learn">)
-- role="tabpanel" with aria-labelledby
-- Modify App.tsx: replace `<TraceView>` with `<RightPanel>`, add `onTryPrompt`
+- Renders LearnView directly (Learn panel on left, AgentFlowSummary on right in App layout)
+- Modify App.tsx: responsive layout — RightPanel (flex-3, learn) | Chat + AgentFlowSummary (flex-2, trace). Wire `onTryPrompt`
 
-**Commit:** `feat(frontend): add RightPanel with tab switching and per-pattern state`
+**Commit:** `feat(frontend): add RightPanel with Learn tab and educational content`
 
-### 8.6 LearnView — General Overview
+### 8.5 LearnView — General Overview
 
 - Create `frontend/src/components/LearnView.tsx`
 - No pattern selected: grid of all 7 patterns with icons and taglines
@@ -75,72 +64,73 @@ Add educational content tabs to the right panel. Users can switch between "Trace
 
 **Commit:** `feat(frontend): add LearnView with pattern overview grid`
 
-### 8.7 LearnView — Router Content
+### 8.6 LearnView — Router Content
 
 - Hero + all collapsible sections for Router pattern
 - Establishes the section component structure for all patterns
 
 **Commit:** `feat(frontend): add Router pattern educational content`
 
-### 8.8 LearnView — Pipeline Content
+### 8.7 LearnView — Pipeline Content
 
 **Commit:** `feat(frontend): add Pipeline pattern educational content`
 
-### 8.9 LearnView — Supervisor Content
+### 8.8 LearnView — Supervisor Content
 
 **Commit:** `feat(frontend): add Supervisor pattern educational content`
 
-### 8.10 LearnView — Debate Content
+### 8.9 LearnView — Debate Content
 
 **Commit:** `feat(frontend): add Debate pattern educational content`
 
-### 8.11 LearnView — Swarm Content
+### 8.10 LearnView — Swarm Content
 
 - Includes comparison table vs Router
 
 **Commit:** `feat(frontend): add Swarm pattern educational content`
 
-### 8.12 LearnView — Map-Reduce Content
+### 8.11 LearnView — Map-Reduce Content
 
 - Includes parallelism implementation detail
 
 **Commit:** `feat(frontend): add Map-Reduce pattern educational content`
 
-### 8.13 LearnView — Reflection Content
+### 8.12 LearnView — Reflection Content
 
 - Includes critic criteria and conditional exit detail
 
 **Commit:** `feat(frontend): add Reflection pattern educational content`
 
-### 8.14 Suggested Prompts + Auto-Switch
+### 8.13 Suggested Prompts
 
 - Create `frontend/src/components/SuggestedPrompts.tsx`
 - 2-3 pill buttons per pattern
 - Wire onTryPrompt callback through App → RightPanel → LearnView
-- Auto-switch to Trace tab when isStreaming becomes true
+- Clicking "Try it" populates the input textarea
 
 **Commit:** `feat(frontend): add try-it prompts with auto-switch to trace on run`
 
-### 8.15 TraceView Cleanup
+### 8.14 AgentFlowSummary + TraceView Replacement
 
-- Remove `PATTERN_DESCRIPTIONS` and `guessPattern()` from TraceView
-- Accept `patternName` prop instead
+- Replace TraceView with compact AgentFlowSummary (horizontal node chain)
+- Remove `PATTERN_DESCRIPTIONS` and `guessPattern()` heuristic
+- AgentFlowSummary shows conditionally when `traceNodes.length > 0`
+- Mermaid diagrams render as SVG in LearnView architecture sections
 
-**Commit:** `refactor(frontend): pass pattern name to TraceView, remove guessPattern heuristic`
+**Commit:** `refactor(frontend): replace TraceView tab with compact AgentFlowSummary`
 
 ## Tests
 
-- Existing tests remain unchanged (no behavioral changes to TraceView)
-- Manual testing: tab switching, content rendering, Try it flow, auto-switch
+- Existing tests remain unchanged
+- Manual testing: content rendering, Try it flow, agent flow visualization
 
 ## Done When
 
-- [ ] Tabs switch between Trace and Learn
-- [ ] Learn tab shows educational content per pattern with collapsible sections
-- [ ] General overview grid renders when no pattern selected
-- [ ] "Try it" buttons populate input and focus textarea
-- [ ] Auto-switch to Trace tab when streaming starts
-- [ ] Tab state persists when switching patterns
-- [ ] Existing trace functionality unchanged
-- [ ] `npm run typecheck` passes
-- [ ] `npm run test` passes
+- [x] Learn panel shows educational content per pattern with collapsible sections
+- [x] General overview grid renders when no pattern selected
+- [x] "Try it" buttons populate input and focus textarea
+- [x] AgentFlowSummary replaces TraceView with compact live trace
+- [x] Mermaid architecture diagrams render as SVG
+- [x] Existing streaming functionality unchanged
+- [x] `npm run typecheck` passes
+- [x] `npm run test` passes

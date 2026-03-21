@@ -1,6 +1,6 @@
 # Agent Orchestration Patterns
 
-Educational repo: 4 multi-agent orchestration patterns with React frontend, SSE streaming, inline trace visualization, Langfuse evals, and Docker.
+Educational repo: 7 multi-agent orchestration patterns with React frontend, SSE streaming, inline trace visualization, Langfuse evals, and Docker.
 
 ## Start Here
 
