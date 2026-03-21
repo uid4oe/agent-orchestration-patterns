@@ -11,18 +11,15 @@ Dynamic agent-to-agent handoffs without central routing. Each agent decides inde
 ## Architecture
 
 ```mermaid
-graph TB
-    Input[Customer Query] --> Triage[Triage Agent]
-    Triage -->|direct response| Output[Response]
-    Triage -->|HANDOFF:sales| Sales[Sales Agent]
-    Triage -->|HANDOFF:support| Support[Support Agent]
-    Triage -->|HANDOFF:billing| Billing[Billing Agent]
-    Sales -->|HANDOFF:support| Support
-    Sales -->|HANDOFF:billing| Billing
-    Support -->|HANDOFF:sales| Sales
-    Support -->|HANDOFF:billing| Billing
-    Billing -->|HANDOFF:sales| Sales
-    Billing -->|HANDOFF:support| Support
+graph LR
+    Input[Query] --> Triage[Triage]
+    Triage --> Output[Response]
+    Triage -->|handoff| Sales[Sales]
+    Triage -->|handoff| Support[Support]
+    Triage -->|handoff| Billing[Billing]
+    Sales <-->|handoff| Support
+    Sales <-->|handoff| Billing
+    Support <-->|handoff| Billing
     Sales --> Output
     Support --> Output
     Billing --> Output

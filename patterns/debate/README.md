@@ -11,12 +11,11 @@ Two debater agents argue opposing sides of a thesis over multiple rounds, then a
 ## Architecture
 
 ```mermaid
-graph TB
-    Input[Thesis] --> Bull[Bull Debater<br/>argues FOR]
-    Bull -->|round 1| Bear[Bear Debater<br/>argues AGAINST]
+graph LR
+    Input[Thesis] --> Bull[Bull<br/>argues FOR]
+    Bull -->|round 1| Bear[Bear<br/>argues AGAINST]
     Bear -->|round 2| Bull
-    Bull -->|round 2| Bear
-    Bear -->|debate complete| Judge[Judge<br/>evaluates + verdict]
+    Bear -->|debate complete| Judge[Judge<br/>verdict]
     Judge --> Output[Final Verdict]
 ```
 

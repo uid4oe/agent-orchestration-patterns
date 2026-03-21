@@ -19,7 +19,6 @@ export interface PatternContent {
   whenToUse: string[];
   architectureMermaid: string;
   howItWorks: string[];
-  eventFlow: string;
   agents: PatternAgent[];
   tradeoffs: {
     pros: string[];
@@ -55,14 +54,6 @@ const router: PatternContent = {
     "The matched specialist agent processes the original input with domain-specific expertise",
     "The specialist's streamed response becomes the final output",
   ],
-  eventFlow: `agent_start  {agent: "router", role: "classifier"}
-chunk        {agent: "router", content: "BILLING"}
-agent_end    {agent: "router", ...}
-handoff      {from: "router", to: "billing", reason: "billing intent detected"}
-agent_start  {agent: "billing", role: "specialist"}
-chunk        {agent: "billing", content: "I can help with your invoice..."}
-agent_end    {agent: "billing", ...}
-done         {totalUsage: {...}}`,
   agents: [
     {
       name: "router",
@@ -138,18 +129,6 @@ const pipeline: PatternContent = {
     "Output passes to the Editor, who refines for clarity, grammar, and coherence",
     "The editor's output is the final result",
   ],
-  eventFlow: `agent_start  {agent: "researcher", role: "research expert"}
-chunk        {agent: "researcher", content: "...research findings..."}
-agent_end    {agent: "researcher", ...}
-handoff      {from: "researcher", to: "writer", reason: "passing to next stage"}
-agent_start  {agent: "writer", role: "content writer"}
-chunk        {agent: "writer", content: "...draft article..."}
-agent_end    {agent: "writer", ...}
-handoff      {from: "writer", to: "editor", reason: "passing to next stage"}
-agent_start  {agent: "editor", role: "editor"}
-chunk        {agent: "editor", content: "...polished article..."}
-agent_end    {agent: "editor", ...}
-done         {totalUsage: {...}}`,
   agents: [
     {
       name: "researcher",
@@ -227,20 +206,6 @@ const supervisor: PatternContent = {
     "Retry loop: if output is inadequate, the worker retries with the supervisor's feedback appended (up to 3 attempts)",
     "Final output: the last worker's accepted output becomes the pattern's result",
   ],
-  eventFlow: `agent_start  {agent: "supervisor", role: "planner"}
-chunk        {agent: "supervisor", content: "Plan: search -> analysis -> summary"}
-agent_end    {agent: "supervisor", ...}
-handoff      {from: "supervisor", to: "search", reason: "Dispatching search task"}
-agent_start  {agent: "search", role: "information gatherer"}
-chunk        {agent: "search", content: "...findings..."}
-agent_end    {agent: "search", ...}
-handoff      {from: "search", to: "supervisor", reason: "Reviewing search output"}
-agent_start  {agent: "supervisor", role: "reviewer"}
-chunk        {agent: "supervisor", content: "Review: adequate. ..."}
-agent_end    {agent: "supervisor", ...}
-handoff      {from: "supervisor", to: "analysis", reason: "Dispatching analysis task"}
-...
-done         {totalUsage: {...}}`,
   agents: [
     {
       name: "supervisor",
@@ -321,20 +286,6 @@ const debate: PatternContent = {
     "This repeats for 2 rounds (configurable), with each debater seeing the full transcript so far",
     "After all rounds, the judge receives the complete debate transcript and delivers a verdict with reasoning",
   ],
-  eventFlow: `agent_start  {agent: "bull", role: "debater"}
-chunk        {agent: "bull", content: "...arguments for..."}
-agent_end    {agent: "bull", ...}
-handoff      {from: "bull", to: "bear", reason: "round 1"}
-agent_start  {agent: "bear", role: "debater"}
-chunk        {agent: "bear", content: "...arguments against..."}
-agent_end    {agent: "bear", ...}
-handoff      {from: "bear", to: "bull", reason: "next round"}
-...
-handoff      {from: "bear", to: "judge", reason: "debate complete"}
-agent_start  {agent: "judge", role: "judge"}
-chunk        {agent: "judge", content: "...verdict and reasoning..."}
-agent_end    {agent: "judge", ...}
-done         {totalUsage: {...}}`,
   agents: [
     {
       name: "bull",
@@ -417,14 +368,6 @@ const swarm: PatternContent = {
     "The target agent can also hand off to another agent if needed",
     "The chain continues until an agent responds without a handoff (max 5 iterations)",
   ],
-  eventFlow: `agent_start  {agent: "triage", role: "triage"}
-chunk        {agent: "triage", content: "...I'll connect you..."}
-agent_end    {agent: "triage", ...}
-handoff      {from: "triage", to: "billing", reason: "triage handed off to billing"}
-agent_start  {agent: "billing", role: "specialist"}
-chunk        {agent: "billing", content: "...I can help with your invoice..."}
-agent_end    {agent: "billing", ...}
-done         {totalUsage: {...}}`,
   agents: [
     {
       name: "triage",
@@ -507,22 +450,6 @@ const mapReduce: PatternContent = {
     "Fan-in \u2014 a single handoff event signals all mappers are done",
     "Reduce \u2014 the ReducerAgent synthesizes all mapper outputs into one coherent response",
   ],
-  eventFlow: `agent_start  {agent: "splitter", role: "splitter"}
-chunk        {agent: "splitter", content: "...subtask plan..."}
-agent_end    {agent: "splitter", ...}
-handoff      {from: "splitter", to: "mapper-1", reason: "fan-out"}
-handoff      {from: "splitter", to: "mapper-2", reason: "fan-out"}
-agent_start  {agent: "mapper-1", role: "mapper"}
-agent_start  {agent: "mapper-2", role: "mapper"}
-chunk        {agent: "mapper-1", content: "...analysis A..."}
-chunk        {agent: "mapper-2", content: "...analysis B..."}
-agent_end    {agent: "mapper-1", ...}
-agent_end    {agent: "mapper-2", ...}
-handoff      {from: "mappers", to: "reducer", reason: "fan-in"}
-agent_start  {agent: "reducer", role: "reducer"}
-chunk        {agent: "reducer", content: "...synthesis..."}
-agent_end    {agent: "reducer", ...}
-done         {totalUsage: {...}}`,
   agents: [
     {
       name: "splitter",
@@ -597,22 +524,6 @@ const reflection: PatternContent = {
     "The loop repeats until pass or max iterations (3) are reached",
     "On the final iteration, the critic is skipped \u2014 the generator's output is the final answer",
   ],
-  eventFlow: `agent_start  {agent: "generator", role: "content generator"}
-chunk        {agent: "generator", content: "...initial draft..."}
-agent_end    {agent: "generator", ...}
-handoff      {from: "generator", to: "critic", reason: "iteration 1 — reviewing"}
-agent_start  {agent: "critic", role: "content critic"}
-chunk        {agent: "critic", content: "...evaluation...{verdict: revise}"}
-agent_end    {agent: "critic", ...}
-handoff      {from: "critic", to: "generator", reason: "revision needed: ..."}
-agent_start  {agent: "generator", role: "content generator"}
-chunk        {agent: "generator", content: "...revised draft..."}
-agent_end    {agent: "generator", ...}
-handoff      {from: "generator", to: "critic", reason: "iteration 2 — reviewing"}
-agent_start  {agent: "critic", role: "content critic"}
-chunk        {agent: "critic", content: "...evaluation...{verdict: pass}"}
-agent_end    {agent: "critic", ...}
-done         {totalUsage: {...}}`,
   agents: [
     {
       name: "generator",

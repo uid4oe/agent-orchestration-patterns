@@ -11,19 +11,15 @@ A supervisor agent plans subtasks, dispatches them to specialized workers, revie
 ## Architecture
 
 ```mermaid
-graph TB
-    Input[User Input] --> Supervisor[Supervisor Agent<br/>planner + reviewer]
-    Supervisor -->|plan| Plan["Subtask Plan<br/>[search, analysis, summary]"]
-    Plan --> Search[Search Worker<br/>information gatherer]
-    Search -->|output| Review1{Supervisor<br/>Review}
-    Review1 -->|adequate| Analysis[Analysis Worker<br/>analyst]
-    Review1 -->|retry| Search
-    Analysis -->|output| Review2{Supervisor<br/>Review}
-    Review2 -->|adequate| Summary[Summary Worker<br/>summarizer]
-    Review2 -->|retry| Analysis
-    Summary -->|output| Review3{Supervisor<br/>Review}
-    Review3 -->|adequate| Output[Final Output]
-    Review3 -->|retry| Summary
+graph LR
+    Input[User Input] --> Supervisor[Supervisor<br/>planner + reviewer]
+    Supervisor -->|plan| Search[Search]
+    Search -->|review| Supervisor
+    Supervisor -->|plan| Analysis[Analysis]
+    Analysis -->|review| Supervisor
+    Supervisor -->|plan| Summary[Summary]
+    Summary -->|review| Supervisor
+    Supervisor --> Output[Final Output]
 ```
 
 ## How It Works

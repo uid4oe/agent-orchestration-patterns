@@ -124,7 +124,7 @@ export class ReflectionLoop {
         type: "handoff",
         from: "critic",
         to: "generator",
-        reason: `iteration ${iteration} — revision needed: ${verdict.feedback}`,
+        reason: `iteration ${iteration} — revision needed: ${verdict.feedback.length > 120 ? verdict.feedback.slice(0, 120) + "…" : verdict.feedback}`,
       });
     }
 

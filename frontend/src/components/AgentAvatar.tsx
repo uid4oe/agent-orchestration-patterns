@@ -10,9 +10,18 @@ const ROLE_COLORS: Record<string, { bg: string; text: string }> = {
   worker: { bg: "bg-teal-100", text: "text-teal-700" },
 };
 
+/** Agent-name overrides — takes priority over role-based colors */
+const NAME_COLORS: Record<string, { bg: string; text: string }> = {
+  bull: { bg: "bg-green-100", text: "text-green-700" },
+};
+
 const DEFAULT_COLORS = { bg: "bg-gray-100", text: "text-gray-600" };
 
-export function getAgentColors(role: string): { bg: string; text: string } {
+export function getAgentColors(role: string, name?: string): { bg: string; text: string } {
+  if (name) {
+    const byName = NAME_COLORS[name.toLowerCase()];
+    if (byName) return byName;
+  }
   return ROLE_COLORS[role.toLowerCase()] ?? DEFAULT_COLORS;
 }
 
@@ -23,7 +32,7 @@ interface AgentAvatarProps {
 }
 
 export function AgentAvatar({ name, role, size = "md" }: AgentAvatarProps) {
-  const colors = getAgentColors(role);
+  const colors = getAgentColors(role, name);
   const initial = name.charAt(0).toUpperCase();
 
   const sizeClasses =

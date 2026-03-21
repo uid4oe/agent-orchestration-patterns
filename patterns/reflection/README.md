@@ -11,13 +11,11 @@ A generator agent produces content, a critic agent evaluates it with a structure
 ## Architecture
 
 ```mermaid
-graph TB
-    Input[User Request] --> Gen1[Generator<br/>produces content]
-    Gen1 -->|handoff| Critic1[Critic<br/>evaluates quality]
-    Critic1 -->|verdict: pass| Output[Final Output]
-    Critic1 -->|verdict: revise| Gen2[Generator<br/>revises with feedback]
-    Gen2 -->|handoff| Critic2[Critic<br/>re-evaluates]
-    Critic2 -->|pass or max iterations| Output
+graph LR
+    Input[User Request] --> Generator[Generator]
+    Generator -->|handoff| Critic[Critic]
+    Critic -->|verdict: pass| Output[Final Output]
+    Critic -->|verdict: revise| Generator
 ```
 
 ## How It Works
