@@ -462,13 +462,13 @@ done         {totalUsage: {...}}`,
   },
   suggestedPrompts: [
     {
-      label: "Vague \u2192 routed to sales",
-      prompt: "Hi, I just signed up and I'm not sure what plan I need",
+      label: "Multi-hop (billing → technical)",
+      prompt:
+        "I was charged twice on my last invoice, and now my dashboard won't load either",
     },
     {
-      label: "Multi-domain (billing + support)",
-      prompt:
-        "I was charged twice for my last payment and the app keeps crashing",
+      label: "Vague → routed to sales",
+      prompt: "Hi, I just signed up and I'm not sure what plan I need",
     },
     {
       label: "Billing + sales chain",
